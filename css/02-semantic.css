@@ -1,0 +1,61 @@
+/* Semantic tokens: what the interface means, mapped onto brand tokens (01-tokens.css = brand/tokens/tokens.css). */
+:root {
+  color-scheme: light;
+
+  --bg: var(--zakpy-warm-white);
+  --bg-alt: var(--zakpy-mist);
+  --surface: #ffffff;
+  --text: var(--zakpy-ink);
+  --text-muted: var(--zakpy-slate);
+  --border: #e4dfd0;
+  --accent: var(--zakpy-red);
+  --accent-hover: var(--zakpy-red-dark);
+  --on-accent: var(--zakpy-warm-white);
+  --positive: var(--zakpy-success);
+  --positive-bg: #e6f4d0;
+  --warning: var(--zakpy-warning);
+  --danger: var(--zakpy-red-dark);
+  --focus: var(--zakpy-ink);
+  --inverse-bg: var(--zakpy-ink);
+  --inverse-text: var(--zakpy-warm-white);
+
+  /* 8px spacing scale */
+  --space-1: 0.5rem;
+  --space-2: 1rem;
+  --space-3: 1.5rem;
+  --space-4: 2rem;
+  --space-5: 3rem;
+  --space-6: 4rem;
+  --space-7: 6rem;
+
+  --container: 72rem;
+  --container-narrow: 44rem;
+  --motion: 180ms;
+  --ease: cubic-bezier(0.2, 0, 0, 1);
+
+  --font-ar: "Cairo", "Tajawal", system-ui, sans-serif;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: var(--zakpy-ink);
+  --bg-alt: #0b1220;
+  --surface: #1a2332;
+  --text: var(--zakpy-warm-white);
+  --text-muted: #aab4c3;
+  --border: #2b364a;
+  --accent: var(--zakpy-coral);
+  --accent-hover: #ff8a85;
+  --on-accent: var(--zakpy-ink);
+  --positive: var(--zakpy-lime);
+  --positive-bg: #243321;
+  --danger: var(--zakpy-coral);
+  --focus: var(--zakpy-warm-white);
+  --inverse-bg: var(--zakpy-warm-white);
+  --inverse-text: var(--zakpy-ink);
+  --shadow-card: 0 12px 32px rgba(0, 0, 0, 0.35);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root { --motion: 0ms; }
+}

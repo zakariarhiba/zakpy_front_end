@@ -1,0 +1,58 @@
+# zakpy-front-end
+
+The ZAKPY style as plain HTML, CSS and JavaScript. Every ZAKPY site and app takes its look from here. No framework, no build tool, no external server (fonts are self-hosted).
+
+Source of truth for colours and fonts is `../brand/`. This repo turns it into ready-to-use components.
+
+## Use it in a site
+
+1. `scripts/build.sh` builds `dist/` (CSS with brand tokens first, JS, fonts, logo).
+2. Copy `dist/` into the site (for example `sites/academy/public/zakpy/`), then:
+
+```html
+<html lang="en" dir="ltr" data-zakpy-intro>   <!-- data-zakpy-intro = 3D intro on first entry -->
+<link rel="stylesheet" href="/zakpy/zakpy.css">
+<script src="/site-text.js"></script>          <!-- optional: your own words, see Languages -->
+<script src="/zakpy/zakpy.js"></script>        <!-- in head, no defer: theme, language and intro apply before first paint -->
+```
+
+Sites hold their own copy so each deploys alone. Never edit the copy, change it here and copy again.
+
+## What is inside
+
+| Path | Content |
+|---|---|
+| `css/` | Source layers: fonts, semantic tokens (light and dark), base, layout, components, utilities. |
+| `js/zakpy.js` | Languages, theme toggle, mobile side drawer, 3D intro, tabs, dialog. Opt in with `data-zakpy-*` attributes. |
+| `dist/` | Built output to copy into sites. Committed on purpose. |
+| `showcase/index.html` | Living style guide: open it to see every component (serve the folder, for example `python3 -m http.server`). |
+
+Components: button, link with arrow, card, navigation, hero, badge, alert, form fields, table, stat, steps, tabs, dialog, footer. Layout helpers: container, section, stack, cluster, grid, split.
+
+## Languages (English, French, Darija)
+
+- Three languages: `en`, `fr` and `ary` (Darija, Arabic script, right to left). Default comes from the browser, the choice is saved.
+- Put text on elements with `data-i18n="key"` (or `data-i18n-attr="aria-label:key"`). Define the words before the script: `window.ZAKPY_I18N = { en: {...}, fr: {...}, ary: {...} }`. `showcase/i18n.js` is a full example.
+- Switcher: buttons with `data-zakpy-lang-set="en|fr|ary"` inside `.lang-switch`. Direction and fonts (Cairo for Arabic) follow automatically.
+- Shared interface words (menu, close, theme, intro text) are built in. JS API: `Zakpy.setLang('fr')`.
+
+## Navigation, theme icon, intro
+
+- Mobile menu: three-line button (`.nav__toggle` with `.burger`) opens a side drawer with a slide transition, dimmed overlay, Escape and overlay close, focus handling. From the left in English and French, from the right in Darija. Copy the nav markup from `showcase/index.html`.
+- Dark mode is an icon button (moon in light mode, sun in dark mode, `.theme-toggle`) with a translated `aria-label`.
+- 3D intro: ported from the Hunter game (pure CSS 3D, about 3 seconds, tap or Escape skips, shorter with reduced motion; its text is always English). Plays once per browser session on pages with `data-zakpy-intro` on `<html>`. `?intro=1` forces it, `Zakpy.playIntro()` replays it.
+
+## Rules
+
+- Style rules come from `../brand/identity/brand-guide.md` and `frontend-design-system.md`. Red marks the main action, lime only success.
+- Light and dark themes through `data-theme`. Right to left through `dir="rtl"` (Academy uses Arabic, font switches to Cairo).
+- Use logical CSS properties (`margin-inline-start`, not `margin-left`) so RTL works.
+- Status is never colour alone: badges and alerts carry text and a symbol.
+- No emojis, no external fonts or scripts, no em dashes in text.
+- Visible keyboard focus everywhere. Respect `prefers-reduced-motion`.
+
+## Open points
+
+- Primary button text contrast is 4.13:1 (Warm White on `#E53935`), under the 4.5:1 AA minimum for normal text. The brand guide asks for red buttons, so it is kept. Fix options: darker red for the button background, or larger bold text. Decision for the owner.
+- The logo is the transparent PNG (`brand/logos/logo_main_transparent.png`). A vector SVG mark would be sharper at small sizes and is still missing.
+- No icon set yet.

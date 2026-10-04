@@ -1,0 +1,4 @@
+.text-center { text-align: center; }
+.mt-0 { margin-top: 0; } .mt-3 { margin-top: var(--space-3); } .mt-4 { margin-top: var(--space-4); }
+.mb-0 { margin-bottom: 0; } .mb-3 { margin-bottom: var(--space-3); }
+.hide-mobile { } @media (max-width: 52rem) { .hide-mobile { display: none; } }

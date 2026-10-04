@@ -1,0 +1,14 @@
+.container { width: min(100% - 2 * var(--space-3), var(--container)); margin-inline: auto; }
+.container--narrow { width: min(100% - 2 * var(--space-3), var(--container-narrow)); margin-inline: auto; }
+.section { padding-block: var(--space-6); }
+.section--alt { background: var(--bg-alt); }
+.section--inverse { background: var(--inverse-bg); color: var(--inverse-text); border-radius: var(--radius-lg); }
+.section--inverse h1, .section--inverse h2, .section--inverse h3, .section--inverse a { color: var(--inverse-text); }
+.section--inverse .lead, .section--inverse .muted { color: inherit; opacity: 0.8; }
+
+.stack > * + * { margin-block-start: var(--stack, var(--space-2)); }
+.stack--lg { --stack: var(--space-4); }
+.cluster { display: flex; flex-wrap: wrap; gap: var(--gap, var(--space-2)); align-items: center; }
+.grid { display: grid; gap: var(--space-3); grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr)); }
+.grid--2 { grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr)); }
+.split { display: grid; gap: var(--space-4); align-items: center; grid-template-columns: repeat(auto-fit, minmax(min(100%, 24rem), 1fr)); }
