@@ -407,3 +407,50 @@ html.intro-play .intro {
   html.intro-play .intro { animation: intro-exit 0.3s ease-in 0.7s forwards !important; }
   .intro__window { transform: translateX(-50%) scaleY(1); } .intro__system, .intro__welcome { opacity: 1; }
 }
+/* Loading overlay. Same look as the Hunter entry animation (dark scene, red glow, grid floor, rings, logo cube),
+   looping while something is pending. Built and shown by zakpy.js (window.Zakpy.loading). Only transform and opacity animate. */
+.loader {
+  position: fixed; inset: 0; z-index: 9000; display: grid; place-items: center; align-content: center; gap: 0;
+  background: radial-gradient(55% 40% at 50% 40%, rgba(229, 57, 53, 0.4) 0%, rgba(229, 57, 53, 0) 70%), rgba(11, 18, 32, 0.94);
+  opacity: 0; visibility: hidden; transition: opacity 220ms var(--ease), visibility 220ms; cursor: progress;
+}
+.loader.is-on { opacity: 1; visibility: visible; }
+.loader__stage { position: relative; width: 220px; height: 190px; perspective: 700px; perspective-origin: 50% 35%; }
+.loader__floor {
+  position: absolute; left: 50%; top: 105px; width: 420px; height: 420px; margin-inline-start: -210px;
+  background: repeating-linear-gradient(0deg, rgba(255, 113, 107, 0.35) 0 1px, transparent 1px 36px), repeating-linear-gradient(90deg, rgba(255, 113, 107, 0.35) 0 1px, transparent 1px 36px);
+  -webkit-mask-image: radial-gradient(circle at 50% 0%, #000 0%, transparent 62%); mask-image: radial-gradient(circle at 50% 0%, #000 0%, transparent 62%);
+  transform-origin: 50% 0; transform: rotateX(78deg);
+}
+.loader__ring { position: absolute; left: 50%; top: 78px; width: 190px; height: 190px; margin-inline-start: -95px; border-radius: 50%; border: 2px solid rgba(255, 113, 107, 0.9); background: radial-gradient(circle, rgba(229, 57, 53, 0.25) 0%, rgba(229, 57, 53, 0) 62%); transform: rotateX(78deg); animation: loader-pulse 1.8s ease-in-out infinite; }
+.loader__ring--2 { border: 1px dashed rgba(183, 227, 106, 0.85); background: none; width: 250px; height: 250px; margin-inline-start: -125px; top: 48px; animation: loader-ring 5s linear infinite; }
+@keyframes loader-pulse { 50% { transform: rotateX(78deg) scale(1.12); opacity: 0.7; } }
+@keyframes loader-ring { to { transform: rotateX(78deg) rotateZ(360deg); } }
+
+.loader__cube { position: absolute; left: 50%; top: 30px; width: 64px; height: 64px; margin-inline-start: -32px; transform-style: preserve-3d; -webkit-transform-style: preserve-3d; transform: rotateX(-18deg) rotateY(30deg); animation: loader-spin 3.2s linear infinite, loader-float 1.8s ease-in-out infinite alternate; will-change: transform; }
+.loader__face { position: absolute; inset: 0; display: grid; place-items: center; border: 1px solid rgba(255, 252, 245, 0.45); border-radius: 10px; background: linear-gradient(135deg, #e53935, #3a0b0b); -webkit-backface-visibility: hidden; backface-visibility: hidden; }
+.loader__face img { width: 76%; height: 76%; object-fit: contain; }
+.loader__face--logo { background: radial-gradient(circle, #1a2332 0%, #0b1220 100%); border-color: #ff716b; }
+.loader__face--front { transform: translateZ(32px); }
+.loader__face--back { transform: rotateY(180deg) translateZ(32px); }
+.loader__face--right { transform: rotateY(90deg) translateZ(32px); }
+.loader__face--left { transform: rotateY(-90deg) translateZ(32px); }
+.loader__face--top { transform: rotateX(90deg) translateZ(32px); }
+.loader__face--bottom { transform: rotateX(-90deg) translateZ(32px); }
+@keyframes loader-spin { to { transform: rotateX(-18deg) rotateY(390deg); } }
+@keyframes loader-float { from { top: 38px; } to { top: 22px; } }
+
+.loader__window { position: relative; width: min(260px, calc(100vw - 32px)); margin-top: var(--space-1); padding: 0.75rem 1rem 0.9rem; border: 1px solid rgba(255, 113, 107, 0.85); border-radius: 10px; background: rgba(11, 18, 32, 0.9); text-align: center; overflow: hidden; }
+.loader__window p { margin: 0; color: #fffcf5; }
+.loader__system { font: 800 1.15rem var(--font-display); letter-spacing: 0.5em; padding-inline-start: 0.5em; }
+.loader__text { font-size: 0.95rem; color: #b7e36a !important; }
+.loader__bar { position: absolute; inset-inline: 0; bottom: 0; height: 3px; background: rgba(255, 252, 245, 0.12); overflow: hidden; }
+.loader__bar::after { content: ""; position: absolute; top: 0; bottom: 0; width: 40%; background: linear-gradient(90deg, transparent, #ff716b, transparent); animation: loader-scan 1.1s linear infinite; }
+@keyframes loader-scan { from { transform: translateX(-100%); } to { transform: translateX(250%); } }
+[dir="rtl"] .loader__bar::after { animation-direction: reverse; }
+
+@media (prefers-reduced-motion: reduce) {
+  .loader { transition-duration: 1ms; }
+  .loader__cube, .loader__ring, .loader__ring--2 { animation: none; }
+  .loader__bar::after { animation: none; width: 100%; opacity: 0.6; }
+}

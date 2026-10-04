@@ -14,6 +14,7 @@
     "hero.cta1": ["Explore the components", "Découvrir les composants", "شوف الكومبوننتات"],
     "hero.cta2": ["See the page pattern", "Voir le modèle de page", "شوف نموذج الصفحة"],
     "hero.replay": ["Replay the intro", "Rejouer l'intro", "عاود الإنترو"],
+    "hero.loader": ["Test the loader", "Tester le chargement", "جرب التحميل"],
 
     "colors.title": ["Colours", "Couleurs", "الألوان"],
     "colors.lead": ["Defined once in the brand tokens. Red marks the main action. Lime is only for success and positive data.", "Définies une seule fois dans les tokens de la marque. Le rouge marque l'action principale. Le vert citron sert seulement au succès et aux données positives.", "كتتعرّف مرة وحدة فـ tokens ديال البراند. الحمر كيبيّن الأكشن الرئيسي. الأخضر كيتستعمل غير للنجاح والأرقام الزوينة."],

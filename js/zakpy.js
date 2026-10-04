@@ -30,17 +30,17 @@
     en: {
       "ui.menu": "Menu", "ui.close": "Close menu", "ui.language": "Language", "ui.skip": "Skip to content",
       "ui.toDark": "Switch to dark mode", "ui.toLight": "Switch to light mode",
-      "intro.welcome": "Digital systems with purpose.", "intro.skip": "Tap to skip"
+      "ui.loading": "Loading", "intro.welcome": "Digital systems with purpose.", "intro.skip": "Tap to skip"
     },
     fr: {
       "ui.menu": "Menu", "ui.close": "Fermer le menu", "ui.language": "Langue", "ui.skip": "Aller au contenu",
       "ui.toDark": "Passer en mode sombre", "ui.toLight": "Passer en mode clair",
-      "intro.welcome": "Des systèmes digitaux utiles.", "intro.skip": "Touchez pour passer"
+      "ui.loading": "Chargement", "intro.welcome": "Des systèmes digitaux utiles.", "intro.skip": "Touchez pour passer"
     },
     ary: {
       "ui.menu": "القائمة", "ui.close": "سد القائمة", "ui.language": "اللغة", "ui.skip": "دوز للمحتوى",
       "ui.toDark": "بدل للمود الغامق", "ui.toLight": "بدل للمود الفاتح",
-      "intro.welcome": "أنظمة رقمية بمعنى.", "intro.skip": "كليكي باش تعدّي"
+      "ui.loading": "كيتحمّل", "intro.welcome": "أنظمة رقمية بمعنى.", "intro.skip": "كليكي باش تعدّي"
     }
   };
 
@@ -200,6 +200,74 @@
   var introWanted = root.hasAttribute("data-zakpy-intro") && (!session("zakpy-intro-seen") || /[?&]intro=1/.test(location.search));
   if (introWanted) { root.classList.add("intro-play"); session("zakpy-intro-seen", "1"); }
 
+  /* ---------- Loading overlay: the Hunter logo cube, looping, while a page or a query is pending ----------
+     Automatic for same-site links and plain form submits. For htmx put data-zakpy-loading on the element
+     (or a parent). In code: Zakpy.loading.show() / hide() / track(promise). Opt out with data-zakpy-no-loader.
+     It only appears if the wait lasts more than a moment, and stays at least 450 ms once shown (no flicker). */
+  var loaderEl = null, loadCount = 0, loadShowTimer = null, loadHideTimer = null, loadSafety = null, loadShownAt = 0;
+  function loaderBuild() {
+    if (loaderEl || !document.body) return loaderEl;
+    var faces = "";
+    ["front", "back"].forEach(function (f) { faces += '<span class="loader__face loader__face--logo loader__face--' + f + '"><img src="' + base + 'logo.png" alt="" width="50" height="50"></span>'; });
+    ["right", "left", "top", "bottom"].forEach(function (f) { faces += '<span class="loader__face loader__face--' + f + '"></span>'; });
+    var el = document.createElement("div");
+    el.className = "loader"; el.setAttribute("role", "status"); el.setAttribute("aria-live", "polite");
+    el.innerHTML = '<div class="loader__stage" aria-hidden="true"><div class="loader__floor"></div><span class="loader__ring"></span>' +
+      '<span class="loader__ring loader__ring--2"></span><div class="loader__cube">' + faces + '</div></div>' +
+      '<div class="loader__window"><p class="loader__system">ZAKPY</p><p class="loader__text"></p><span class="loader__bar" aria-hidden="true"></span></div>';
+    document.body.appendChild(el);
+    loaderEl = el;
+    return el;
+  }
+  function loaderReveal() {
+    var el = loaderBuild(); if (!el) return;
+    el.querySelector(".loader__text").textContent = t("ui.loading");
+    void el.offsetWidth;
+    el.classList.add("is-on");
+    root.setAttribute("aria-busy", "true");
+    loadShownAt = Date.now();
+  }
+  function loaderShow(delay) {
+    loadCount++;
+    if (loadCount > 1) return;
+    clearTimeout(loadHideTimer);
+    if (loadShownAt) return; // still on screen from the previous wait
+    loadShowTimer = setTimeout(loaderReveal, delay == null ? 150 : delay);
+    clearTimeout(loadSafety);
+    loadSafety = setTimeout(loaderReset, 30000); // never leave the page covered (for example after a download link)
+  }
+  function loaderHide() {
+    if (loadCount > 0) loadCount--;
+    if (loadCount > 0) return;
+    clearTimeout(loadShowTimer); clearTimeout(loadSafety);
+    if (!loadShownAt) return;
+    clearTimeout(loadHideTimer);
+    loadHideTimer = setTimeout(loaderOff, Math.max(0, 450 - (Date.now() - loadShownAt)));
+  }
+  function loaderOff() {
+    if (loaderEl) loaderEl.classList.remove("is-on");
+    loadShownAt = 0; root.removeAttribute("aria-busy");
+  }
+  function loaderReset() { loadCount = 0; clearTimeout(loadShowTimer); clearTimeout(loadHideTimer); loaderOff(); }
+  function loaderTrack(promise) {
+    loaderShow(200);
+    var done = function () { loaderHide(); };
+    Promise.resolve(promise).then(done, done);
+    return promise;
+  }
+  window.addEventListener("pageshow", function (e) { if (e.persisted) loaderReset(); }); // back button restores the page from cache
+
+  var htmxBusy = typeof WeakSet === "function" ? new WeakSet() : null;
+  document.addEventListener("htmx:beforeRequest", function (e) {
+    var elt = e.detail && e.detail.elt;
+    if (!htmxBusy || !elt || !elt.closest || !elt.closest("[data-zakpy-loading]") || elt.closest("[data-zakpy-no-loader]")) return;
+    htmxBusy.add(elt); loaderShow(200);
+  });
+  document.addEventListener("htmx:afterRequest", function (e) {
+    var elt = e.detail && e.detail.elt;
+    if (htmxBusy && elt && htmxBusy.has(elt)) { htmxBusy.delete(elt); loaderHide(); }
+  });
+
   /* ---------- Tabs ---------- */
   function selectTab(tab) {
     var list = tab.parentElement;
@@ -234,7 +302,24 @@
     if (c) { var parent = c.closest("dialog"); if (parent) parent.close(); return; }
 
     var tab = el.closest('.tabs [role="tab"]');
-    if (tab) selectTab(tab);
+    if (tab) { selectTab(tab); return; }
+
+    var demo = el.closest("[data-zakpy-loader-demo]");
+    if (demo) { loaderTrack(new Promise(function (r) { setTimeout(r, 2500); })); return; }
+
+    var a = el.closest("a[href]");
+    if (a && !e.defaultPrevented && e.button === 0 && !(e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) &&
+        (!a.target || a.target === "_self") && !a.hasAttribute("download") && !a.closest("[data-zakpy-no-loader]")) {
+      var url;
+      try { url = new URL(a.href, location.href); } catch (err) { return; }
+      var samePage = url.pathname === location.pathname && url.search === location.search;
+      if ((url.protocol === "http:" || url.protocol === "https:") && url.origin === location.origin && !(samePage && url.hash)) loaderShow(120);
+    }
+  });
+  document.addEventListener("submit", function (e) {
+    var f = e.target;
+    if (e.defaultPrevented || !f || !f.method || f.method.toLowerCase() === "dialog" || (f.target && f.target !== "_self") || f.closest("[data-zakpy-no-loader]")) return;
+    loaderShow(120);
   });
 
   document.addEventListener("keydown", function (e) {
@@ -261,5 +346,5 @@
   applyLang(current, false); // sets lang and dir right away, before the body exists
 
   /* Small public API for sites */
-  window.Zakpy = { setLang: function (c) { applyLang(c, true); }, getLang: function () { return current; }, playIntro: introPlay, t: t };
+  window.Zakpy = { setLang: function (c) { applyLang(c, true); }, getLang: function () { return current; }, playIntro: introPlay, loading: { show: loaderShow, hide: loaderHide, track: loaderTrack }, t: t };
 })();

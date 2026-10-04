@@ -56,3 +56,14 @@ Components: button, link with arrow, card, navigation, hero, badge, alert, form 
 - Primary button text contrast is 4.13:1 (Warm White on `#E53935`), under the 4.5:1 AA minimum for normal text. The brand guide asks for red buttons, so it is kept. Fix options: darker red for the button background, or larger bold text. Decision for the owner.
 - The logo is the transparent PNG (`brand/logos/logo_main_transparent.png`). A vector SVG mark would be sharper at small sizes and is still missing.
 - No icon set yet.
+
+## Loading overlay
+
+A full-screen overlay with the Hunter logo cube (spinning over a grid floor, rings, a ZAKPY window with a translated "Loading" text and a scan bar). Pure CSS, built by `zakpy.js`, no markup to copy.
+
+- Automatic: same-site link clicks and plain form submits show it. Hash links, new-tab links, downloads, modifier clicks and `method="dialog"` forms do not. Opt out with `data-zakpy-no-loader` on the element or a parent.
+- htmx: put `data-zakpy-loading` on the triggering element (or a parent) and it shows for the length of the request.
+- Code: `Zakpy.loading.show()` and `Zakpy.loading.hide()` (counted, so overlapping waits work), or `Zakpy.loading.track(promise)`.
+- It only appears if the wait lasts more than about 0.15 s, and once shown it stays at least 0.45 s, so fast pages never flicker. A 30 s safety timer removes it, and the back button restores a clean page.
+- Reduced motion: the cube and rings stand still. Accessibility: `role="status"` and `aria-busy` on the page while it shows.
+- Text key `ui.loading` can be overridden in `window.ZAKPY_I18N`. The showcase has a "Test the loader" button.
