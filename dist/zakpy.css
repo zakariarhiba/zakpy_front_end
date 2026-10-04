@@ -186,6 +186,19 @@ code, kbd { font-family: ui-monospace, "SF Mono", Consolas, monospace; font-size
 .nav__links a { text-decoration: none; font-weight: 500; padding-block: var(--space-1); border-bottom: 2px solid transparent; }
 .nav__links a:hover, .nav__links a[aria-current="page"] { border-bottom-color: var(--accent); color: var(--text); }
 .nav__tools { display: flex; align-items: center; gap: var(--space-1); }
+/* Icons in links are for the side drawer only, the desktop bar stays text */
+.nav__icon { display: none; }
+/* Group: a link with sub routes. Dropdown on desktop, accordion in the drawer. Markup: li.nav__group > button.nav__group-toggle[data-zakpy-group] + div.nav__sub > ul */
+.nav__group { position: relative; }
+.nav__group-toggle { display: inline-flex; align-items: center; gap: 0.35rem; padding: var(--space-1) 0; background: none; border: 0; border-bottom: 2px solid transparent; color: var(--text); font: 500 1.0625rem var(--font-body); cursor: pointer; }
+.nav__group-toggle:hover, .nav__group-toggle[aria-expanded="true"] { border-bottom-color: var(--accent); }
+.nav__chevron { transition: transform 260ms var(--ease); }
+.nav__group-toggle[aria-expanded="true"] .nav__chevron { transform: rotate(180deg); }
+.nav__sub { position: absolute; z-index: 5; top: 100%; inset-inline-start: 0; min-width: 15rem; padding: var(--space-1); background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-sm); box-shadow: var(--shadow-card); opacity: 0; visibility: hidden; transform: translateY(-4px); transition: opacity 180ms var(--ease), transform 180ms var(--ease), visibility 180ms; }
+.nav__group-toggle[aria-expanded="true"] + .nav__sub { opacity: 1; visibility: visible; transform: none; }
+.nav__sub ul { list-style: none; margin: 0; padding: 0; }
+.nav__sub a { display: block; padding: 0.5rem 0.75rem; border-bottom: 0; border-radius: var(--radius-sm); }
+.nav__sub a:hover { background: var(--bg-alt); }
 .nav__drawer-head, .nav__drawer-tools, .nav__overlay, .icon-btn.nav__toggle { display: none; }
 
 /* Icon button (theme toggle, close). Always has an aria-label, never text only. */
@@ -235,14 +248,24 @@ code, kbd { font-family: ui-monospace, "SF Mono", Consolas, monospace; font-size
   [dir="rtl"] .nav__links { transform: translateX(102%); }
   .nav__links.is-open { visibility: visible; transform: none; }
   .nav__drawer-head { display: flex; align-items: center; justify-content: space-between; padding: var(--space-2) var(--space-3); border-bottom: 1px solid var(--border); margin-bottom: var(--space-1); }
-  .nav__links li:not(.nav__drawer-head) a { display: block; padding: var(--space-2) var(--space-3); border-bottom: 0; border-inline-start: 4px solid transparent; font-size: 1.125rem; transition: background var(--motion) var(--ease), border-color var(--motion) var(--ease); }
-  .nav__links li:not(.nav__drawer-head) a:hover, .nav__links a[aria-current="page"] { background: var(--bg-alt); border-inline-start-color: var(--accent); }
+  .nav__links li:not(.nav__drawer-head) a, .nav__group-toggle { display: flex; align-items: center; gap: var(--space-2); width: 100%; padding: var(--space-2) var(--space-3); text-align: start; border-bottom: 0; border-inline-start: 4px solid transparent; font-size: 1.125rem; transition: background var(--motion) var(--ease), border-color var(--motion) var(--ease); }
+  .nav__links li:not(.nav__drawer-head) a:hover, .nav__group-toggle:hover, .nav__links a[aria-current="page"] { background: var(--bg-alt); border-inline-start-color: var(--accent); }
   .nav__links li:not(.nav__drawer-head) { opacity: 0; transform: translateX(-12px); transition: opacity 300ms var(--ease), transform 300ms var(--ease); }
   [dir="rtl"] .nav__links li:not(.nav__drawer-head) { transform: translateX(12px); }
   .nav__links.is-open li:not(.nav__drawer-head) { opacity: 1; transform: none; }
   .nav__links.is-open li:nth-child(2) { transition-delay: 60ms; } .nav__links.is-open li:nth-child(3) { transition-delay: 100ms; }
   .nav__links.is-open li:nth-child(4) { transition-delay: 140ms; } .nav__links.is-open li:nth-child(5) { transition-delay: 180ms; }
   .nav__links.is-open li:nth-child(6) { transition-delay: 220ms; } .nav__links.is-open li:nth-child(7) { transition-delay: 260ms; } .nav__links.is-open li:nth-child(8) { transition-delay: 300ms; }
+  .nav__icon { display: block; color: var(--text-muted); transition: color var(--motion) var(--ease); }
+  .nav__links a:hover .nav__icon, .nav__links a[aria-current="page"] .nav__icon, .nav__group-toggle:hover .nav__icon { color: var(--accent); }
+  .nav__group-toggle { background: none; border-top: 0; border-bottom: 0; border-inline-end: 0; color: var(--text); font: 500 1.125rem var(--font-body); cursor: pointer; }
+  .nav__group-toggle .nav__chevron { margin-inline-start: auto; }
+  .nav__sub { position: static; display: grid; grid-template-rows: 0fr; min-width: 0; padding: 0; border: 0; border-radius: 0; box-shadow: none; background: transparent; opacity: 1; visibility: visible; transform: none; transition: grid-template-rows 280ms var(--ease); }
+  .nav__group-toggle[aria-expanded="true"] + .nav__sub { grid-template-rows: 1fr; }
+  .nav__sub > ul { min-height: 0; overflow: hidden; visibility: hidden; transition: visibility 280ms; }
+  .nav__group-toggle[aria-expanded="true"] + .nav__sub > ul { visibility: visible; }
+  .nav__links .nav__sub li a { padding: 0.75rem var(--space-3) 0.75rem var(--space-5); font-size: 1rem; border-radius: 0; }
+  .nav__sub .nav__icon { width: 1.125rem; height: 1.125rem; }
   .nav__drawer-tools { display: flex; align-items: center; justify-content: space-between; gap: var(--space-2); padding: var(--space-3); margin-top: var(--space-2); border-top: 1px solid var(--border); }
 }
 @media (max-width: 26rem) { .lang-switch button { min-width: 2.25rem; padding: 0 0.4rem; } }

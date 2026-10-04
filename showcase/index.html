@@ -32,12 +32,25 @@
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
           </button>
         </li>
-        <li><a href="#colors" data-i18n="nav.colors">Colours</a></li>
-        <li><a href="#type" data-i18n="nav.type">Type</a></li>
-        <li><a href="#logo" data-i18n="nav.logo">Logo</a></li>
-        <li><a href="#icons" data-i18n="nav.icons">Icons</a></li>
-        <li><a href="#components" data-i18n="nav.components">Components</a></li>
-        <li><a href="#page" data-i18n="nav.page">Page pattern</a></li>
+        <li><a href="#colors"><svg class="icon nav__icon" aria-hidden="true"><use href="#i-palette"/></svg><span data-i18n="nav.colors">Colours</span></a></li>
+        <li><a href="#type"><svg class="icon nav__icon" aria-hidden="true"><use href="#i-type"/></svg><span data-i18n="nav.type">Type</span></a></li>
+        <li><a href="#logo"><svg class="icon nav__icon" aria-hidden="true"><use href="#i-award"/></svg><span data-i18n="nav.logo">Logo</span></a></li>
+        <li><a href="#icons"><svg class="icon nav__icon" aria-hidden="true"><use href="#i-star"/></svg><span data-i18n="nav.icons">Icons</span></a></li>
+        <li class="nav__group">
+          <button class="nav__group-toggle" type="button" aria-expanded="false" aria-controls="grp-components" data-zakpy-group>
+            <svg class="icon nav__icon" aria-hidden="true"><use href="#i-layout"/></svg><span data-i18n="nav.components">Components</span><svg class="icon icon--sm nav__chevron" aria-hidden="true"><use href="#i-chevron-down"/></svg>
+          </button>
+          <div class="nav__sub" id="grp-components">
+            <ul>
+              <li><a href="#c-buttons"><svg class="icon nav__icon" aria-hidden="true"><use href="#i-play"/></svg><span data-i18n="comp.buttons">Buttons</span></a></li>
+              <li><a href="#c-cards"><svg class="icon nav__icon" aria-hidden="true"><use href="#i-layout"/></svg><span data-i18n="comp.cards">Cards</span></a></li>
+              <li><a href="#c-form"><svg class="icon nav__icon" aria-hidden="true"><use href="#i-pen"/></svg><span data-i18n="comp.form">Form</span></a></li>
+              <li><a href="#c-stats"><svg class="icon nav__icon" aria-hidden="true"><use href="#i-monitor"/></svg><span data-i18n="comp.stats">Stats and table</span></a></li>
+              <li><a href="#c-tabs"><svg class="icon nav__icon" aria-hidden="true"><use href="#i-folder"/></svg><span data-i18n="comp.tabs">Tabs and dialog</span></a></li>
+            </ul>
+          </div>
+        </li>
+        <li><a href="#page"><svg class="icon nav__icon" aria-hidden="true"><use href="#i-home"/></svg><span data-i18n="nav.page">Page pattern</span></a></li>
         <li class="nav__drawer-tools">
           <div class="lang-switch" role="group" data-i18n-attr="aria-label:ui.language" aria-label="Language">
             <button type="button" data-zakpy-lang-set="en" lang="en" aria-pressed="true">EN</button>
@@ -132,54 +145,54 @@
         <h2 data-i18n="icons.title">Icons</h2>
         <p class="muted" data-i18n="icons.lead"></p>
         <div class="cluster mt-3">
-          <a class="btn" href="#icons"><svg class="icon" aria-hidden="true"><use href="#mail"/></svg><span data-i18n="icons.btn">Button with an icon</span></a>
+          <a class="btn" href="#icons"><svg class="icon" aria-hidden="true"><use href="#i-mail"/></svg><span data-i18n="icons.btn">Button with an icon</span></a>
           <a class="link-arrow" href="#icons"><span data-i18n="icons.link">All icons</span></a>
         </div>
         <div class="icon-grid">
-          <div class="icon-tile"><svg class="icon" aria-hidden="true"><use href="#alert"/></svg><code>alert</code></div>
-          <div class="icon-tile"><svg class="icon" aria-hidden="true"><use href="#arrow-left"/></svg><code>arrow-left</code></div>
-          <div class="icon-tile"><svg class="icon" aria-hidden="true"><use href="#arrow-right"/></svg><code>arrow-right</code></div>
-          <div class="icon-tile"><svg class="icon" aria-hidden="true"><use href="#award"/></svg><code>award</code></div>
-          <div class="icon-tile"><svg class="icon" aria-hidden="true"><use href="#bell"/></svg><code>bell</code></div>
-          <div class="icon-tile"><svg class="icon" aria-hidden="true"><use href="#book"/></svg><code>book</code></div>
-          <div class="icon-tile"><svg class="icon" aria-hidden="true"><use href="#calendar"/></svg><code>calendar</code></div>
-          <div class="icon-tile"><svg class="icon" aria-hidden="true"><use href="#chat"/></svg><code>chat</code></div>
-          <div class="icon-tile"><svg class="icon" aria-hidden="true"><use href="#check"/></svg><code>check</code></div>
-          <div class="icon-tile"><svg class="icon" aria-hidden="true"><use href="#check-circle"/></svg><code>check-circle</code></div>
-          <div class="icon-tile"><svg class="icon" aria-hidden="true"><use href="#chevron-down"/></svg><code>chevron-down</code></div>
-          <div class="icon-tile"><svg class="icon" aria-hidden="true"><use href="#chevron-right"/></svg><code>chevron-right</code></div>
-          <div class="icon-tile"><svg class="icon" aria-hidden="true"><use href="#clock"/></svg><code>clock</code></div>
-          <div class="icon-tile"><svg class="icon" aria-hidden="true"><use href="#close"/></svg><code>close</code></div>
-          <div class="icon-tile"><svg class="icon" aria-hidden="true"><use href="#cloud"/></svg><code>cloud</code></div>
-          <div class="icon-tile"><svg class="icon" aria-hidden="true"><use href="#code"/></svg><code>code</code></div>
-          <div class="icon-tile"><svg class="icon" aria-hidden="true"><use href="#download"/></svg><code>download</code></div>
-          <div class="icon-tile"><svg class="icon" aria-hidden="true"><use href="#external"/></svg><code>external</code></div>
-          <div class="icon-tile"><svg class="icon" aria-hidden="true"><use href="#folder"/></svg><code>folder</code></div>
-          <div class="icon-tile"><svg class="icon" aria-hidden="true"><use href="#github"/></svg><code>github</code></div>
-          <div class="icon-tile"><svg class="icon" aria-hidden="true"><use href="#globe"/></svg><code>globe</code></div>
-          <div class="icon-tile"><svg class="icon" aria-hidden="true"><use href="#heart"/></svg><code>heart</code></div>
-          <div class="icon-tile"><svg class="icon" aria-hidden="true"><use href="#home"/></svg><code>home</code></div>
-          <div class="icon-tile"><svg class="icon" aria-hidden="true"><use href="#info"/></svg><code>info</code></div>
-          <div class="icon-tile"><svg class="icon" aria-hidden="true"><use href="#instagram"/></svg><code>instagram</code></div>
-          <div class="icon-tile"><svg class="icon" aria-hidden="true"><use href="#lightbulb"/></svg><code>lightbulb</code></div>
-          <div class="icon-tile"><svg class="icon" aria-hidden="true"><use href="#linkedin"/></svg><code>linkedin</code></div>
-          <div class="icon-tile"><svg class="icon" aria-hidden="true"><use href="#lock"/></svg><code>lock</code></div>
-          <div class="icon-tile"><svg class="icon" aria-hidden="true"><use href="#mail"/></svg><code>mail</code></div>
-          <div class="icon-tile"><svg class="icon" aria-hidden="true"><use href="#menu"/></svg><code>menu</code></div>
-          <div class="icon-tile"><svg class="icon" aria-hidden="true"><use href="#monitor"/></svg><code>monitor</code></div>
-          <div class="icon-tile"><svg class="icon" aria-hidden="true"><use href="#moon"/></svg><code>moon</code></div>
-          <div class="icon-tile"><svg class="icon" aria-hidden="true"><use href="#pen"/></svg><code>pen</code></div>
-          <div class="icon-tile"><svg class="icon" aria-hidden="true"><use href="#phone"/></svg><code>phone</code></div>
-          <div class="icon-tile"><svg class="icon" aria-hidden="true"><use href="#play"/></svg><code>play</code></div>
-          <div class="icon-tile"><svg class="icon" aria-hidden="true"><use href="#plus"/></svg><code>plus</code></div>
-          <div class="icon-tile"><svg class="icon" aria-hidden="true"><use href="#search"/></svg><code>search</code></div>
-          <div class="icon-tile"><svg class="icon" aria-hidden="true"><use href="#settings"/></svg><code>settings</code></div>
-          <div class="icon-tile"><svg class="icon" aria-hidden="true"><use href="#shield"/></svg><code>shield</code></div>
-          <div class="icon-tile"><svg class="icon" aria-hidden="true"><use href="#star"/></svg><code>star</code></div>
-          <div class="icon-tile"><svg class="icon" aria-hidden="true"><use href="#sun"/></svg><code>sun</code></div>
-          <div class="icon-tile"><svg class="icon" aria-hidden="true"><use href="#user"/></svg><code>user</code></div>
-          <div class="icon-tile"><svg class="icon" aria-hidden="true"><use href="#whatsapp"/></svg><code>whatsapp</code></div>
-          <div class="icon-tile"><svg class="icon" aria-hidden="true"><use href="#youtube"/></svg><code>youtube</code></div>
+          <div class="icon-tile"><svg class="icon" aria-hidden="true"><use href="#i-alert"/></svg><code>alert</code></div>
+          <div class="icon-tile"><svg class="icon" aria-hidden="true"><use href="#i-arrow-left"/></svg><code>arrow-left</code></div>
+          <div class="icon-tile"><svg class="icon" aria-hidden="true"><use href="#i-arrow-right"/></svg><code>arrow-right</code></div>
+          <div class="icon-tile"><svg class="icon" aria-hidden="true"><use href="#i-award"/></svg><code>award</code></div>
+          <div class="icon-tile"><svg class="icon" aria-hidden="true"><use href="#i-bell"/></svg><code>bell</code></div>
+          <div class="icon-tile"><svg class="icon" aria-hidden="true"><use href="#i-book"/></svg><code>book</code></div>
+          <div class="icon-tile"><svg class="icon" aria-hidden="true"><use href="#i-calendar"/></svg><code>calendar</code></div>
+          <div class="icon-tile"><svg class="icon" aria-hidden="true"><use href="#i-chat"/></svg><code>chat</code></div>
+          <div class="icon-tile"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg><code>check</code></div>
+          <div class="icon-tile"><svg class="icon" aria-hidden="true"><use href="#i-check-circle"/></svg><code>check-circle</code></div>
+          <div class="icon-tile"><svg class="icon" aria-hidden="true"><use href="#i-chevron-down"/></svg><code>chevron-down</code></div>
+          <div class="icon-tile"><svg class="icon" aria-hidden="true"><use href="#i-chevron-right"/></svg><code>chevron-right</code></div>
+          <div class="icon-tile"><svg class="icon" aria-hidden="true"><use href="#i-clock"/></svg><code>clock</code></div>
+          <div class="icon-tile"><svg class="icon" aria-hidden="true"><use href="#i-close"/></svg><code>close</code></div>
+          <div class="icon-tile"><svg class="icon" aria-hidden="true"><use href="#i-cloud"/></svg><code>cloud</code></div>
+          <div class="icon-tile"><svg class="icon" aria-hidden="true"><use href="#i-code"/></svg><code>code</code></div>
+          <div class="icon-tile"><svg class="icon" aria-hidden="true"><use href="#i-download"/></svg><code>download</code></div>
+          <div class="icon-tile"><svg class="icon" aria-hidden="true"><use href="#i-external"/></svg><code>external</code></div>
+          <div class="icon-tile"><svg class="icon" aria-hidden="true"><use href="#i-folder"/></svg><code>folder</code></div>
+          <div class="icon-tile"><svg class="icon" aria-hidden="true"><use href="#i-github"/></svg><code>github</code></div>
+          <div class="icon-tile"><svg class="icon" aria-hidden="true"><use href="#i-globe"/></svg><code>globe</code></div>
+          <div class="icon-tile"><svg class="icon" aria-hidden="true"><use href="#i-heart"/></svg><code>heart</code></div>
+          <div class="icon-tile"><svg class="icon" aria-hidden="true"><use href="#i-home"/></svg><code>home</code></div>
+          <div class="icon-tile"><svg class="icon" aria-hidden="true"><use href="#i-info"/></svg><code>info</code></div>
+          <div class="icon-tile"><svg class="icon" aria-hidden="true"><use href="#i-instagram"/></svg><code>instagram</code></div>
+          <div class="icon-tile"><svg class="icon" aria-hidden="true"><use href="#i-lightbulb"/></svg><code>lightbulb</code></div>
+          <div class="icon-tile"><svg class="icon" aria-hidden="true"><use href="#i-linkedin"/></svg><code>linkedin</code></div>
+          <div class="icon-tile"><svg class="icon" aria-hidden="true"><use href="#i-lock"/></svg><code>lock</code></div>
+          <div class="icon-tile"><svg class="icon" aria-hidden="true"><use href="#i-mail"/></svg><code>mail</code></div>
+          <div class="icon-tile"><svg class="icon" aria-hidden="true"><use href="#i-menu"/></svg><code>menu</code></div>
+          <div class="icon-tile"><svg class="icon" aria-hidden="true"><use href="#i-monitor"/></svg><code>monitor</code></div>
+          <div class="icon-tile"><svg class="icon" aria-hidden="true"><use href="#i-moon"/></svg><code>moon</code></div>
+          <div class="icon-tile"><svg class="icon" aria-hidden="true"><use href="#i-pen"/></svg><code>pen</code></div>
+          <div class="icon-tile"><svg class="icon" aria-hidden="true"><use href="#i-phone"/></svg><code>phone</code></div>
+          <div class="icon-tile"><svg class="icon" aria-hidden="true"><use href="#i-play"/></svg><code>play</code></div>
+          <div class="icon-tile"><svg class="icon" aria-hidden="true"><use href="#i-plus"/></svg><code>plus</code></div>
+          <div class="icon-tile"><svg class="icon" aria-hidden="true"><use href="#i-search"/></svg><code>search</code></div>
+          <div class="icon-tile"><svg class="icon" aria-hidden="true"><use href="#i-settings"/></svg><code>settings</code></div>
+          <div class="icon-tile"><svg class="icon" aria-hidden="true"><use href="#i-shield"/></svg><code>shield</code></div>
+          <div class="icon-tile"><svg class="icon" aria-hidden="true"><use href="#i-star"/></svg><code>star</code></div>
+          <div class="icon-tile"><svg class="icon" aria-hidden="true"><use href="#i-sun"/></svg><code>sun</code></div>
+          <div class="icon-tile"><svg class="icon" aria-hidden="true"><use href="#i-user"/></svg><code>user</code></div>
+          <div class="icon-tile"><svg class="icon" aria-hidden="true"><use href="#i-whatsapp"/></svg><code>whatsapp</code></div>
+          <div class="icon-tile"><svg class="icon" aria-hidden="true"><use href="#i-youtube"/></svg><code>youtube</code></div>
         </div>
       </div>
     </section>
@@ -188,7 +201,7 @@
       <div class="container stack stack--lg">
         <h2 data-i18n="comp.title">Components</h2>
 
-        <div class="stack"><h3 data-i18n="comp.buttons">Buttons</h3>
+        <div class="stack" id="c-buttons"><h3 data-i18n="comp.buttons">Buttons</h3>
           <div class="demo cluster">
             <a class="btn" href="#components" data-i18n="btn.explore"></a>
             <a class="btn btn--secondary" href="#components" data-i18n="btn.audit"></a>
@@ -198,7 +211,7 @@
           </div>
         </div>
 
-        <div class="stack"><h3 data-i18n="comp.cards">Cards</h3>
+        <div class="stack" id="c-cards"><h3 data-i18n="comp.cards">Cards</h3>
           <div class="grid">
             <article class="card"><span class="card__eyebrow" data-i18n="card.academy"></span><h3 data-i18n="card.python.t"></h3><p data-i18n="card.python.p"></p><a class="link-arrow" href="#components" data-i18n="card.python.a"></a></article>
             <article class="card"><span class="card__eyebrow" data-i18n="card.solutions"></span><h3 data-i18n="card.sol.t"></h3><p data-i18n="card.sol.p"></p><a class="link-arrow" href="#components" data-i18n="card.sol.a"></a></article>
@@ -215,7 +228,7 @@
           </div>
         </div>
 
-        <div class="stack"><h3 data-i18n="comp.form">Form</h3>
+        <div class="stack" id="c-form"><h3 data-i18n="comp.form">Form</h3>
           <form class="card stack" onsubmit="return false" style="max-width:32rem">
             <div class="field"><label for="f-name" data-i18n="f.name"></label><input class="input" id="f-name" autocomplete="name"><span class="field__hint" data-i18n="f.name.hint"></span></div>
             <div class="field"><label for="f-mail" data-i18n="f.mail"></label><input class="input" id="f-mail" type="email" aria-invalid="true" aria-describedby="f-mail-err" value="zakaria@" dir="ltr"><span class="field__error" id="f-mail-err" data-i18n="f.mail.err"></span></div>
@@ -226,7 +239,7 @@
           </form>
         </div>
 
-        <div class="stack"><h3 data-i18n="comp.stats">Stats and table</h3>
+        <div class="stack" id="c-stats"><h3 data-i18n="comp.stats">Stats and table</h3>
           <div class="grid">
             <div class="card stat"><span class="stat__label" data-i18n="s.students"></span><span class="stat__value">1,284</span><span class="stat__delta stat__delta--up" data-i18n="s.up"></span></div>
             <div class="card stat"><span class="stat__label" data-i18n="s.tickets"></span><span class="stat__value">7</span><span class="stat__delta stat__delta--down" data-i18n="s.down"></span></div>
@@ -251,7 +264,7 @@
           </ol>
         </div>
 
-        <div class="stack"><h3 data-i18n="comp.tabs">Tabs and dialog</h3>
+        <div class="stack" id="c-tabs"><h3 data-i18n="comp.tabs">Tabs and dialog</h3>
           <div class="tabs card">
             <div role="tablist">
               <button role="tab" id="t1" aria-selected="true" aria-controls="p1" data-i18n="tab.1"></button>

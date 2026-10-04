@@ -70,11 +70,17 @@ A full-screen overlay with the Hunter logo cube (spinning over a grid floor, rin
 
 ## Icons
 
-44 outline icons in `brand/icons/` (one SVG per file, 24 px grid, 2 px stroke, round ends, `currentColor`). Themes come from the Instagram highlight covers (monitor, chat, heart, calendar, check, home, mail, cloud, star, award, pen, code, lightbulb, book) plus interface icons (menu, close, search, arrows, chevrons, plus, external, download, sun, moon, globe, user, lock, settings, bell, info, alert, clock, shield, play, folder, phone) and social networks (whatsapp, instagram, youtube, github, linkedin).
+47 outline icons in `brand/icons/` (one SVG per file, 24 px grid, 2 px stroke, round ends, `currentColor`). Themes come from the Instagram highlight covers (monitor, chat, heart, calendar, check, home, mail, cloud, star, award, pen, code, lightbulb, book) plus interface icons (palette, type, layout, menu, close, search, arrows, chevrons, plus, external, download, sun, moon, globe, user, lock, settings, bell, info, alert, clock, shield, play, folder, phone) and social networks (whatsapp, instagram, youtube, github, linkedin).
 
-- `scripts/build.sh` builds the sprite (one `<symbol>` per file, file name is the id) and embeds it in `dist/zakpy.js`, which adds it to the page at load. Nothing else to copy.
-- Use: `<svg class="icon" aria-hidden="true"><use href="#home"/></svg>`. Sizes `icon--sm`, `icon--lg`, colour `icon--accent` (red) or inherited text colour. Inside `.btn` the size adjusts itself. Add `icon--flip` to arrows so they mirror in Darija.
+- `scripts/build.sh` builds the sprite (one `<symbol>` per file, id is `i-` plus the file name, so it never collides with a page id) and embeds it in `dist/zakpy.js`, which adds it to the page at load. Nothing else to copy.
+- Use: `<svg class="icon" aria-hidden="true"><use href="#i-home"/></svg>`. Sizes `icon--sm`, `icon--lg`, colour `icon--accent` (red) or inherited text colour. Inside `.btn` the size adjusts itself. Add `icon--flip` to arrows so they mirror in Darija.
 - An icon alone needs an `aria-label` on its button, never an empty control. With text next to it, keep `aria-hidden="true"`.
-- `dist/zakpy-icons.svg` is also written for sites that prefer an external file (`href="zakpy-icons.svg#home"`, needs a web server, not `file://`).
+- `dist/zakpy-icons.svg` is also written for sites that prefer an external file (`href="zakpy-icons.svg#i-home"`, needs a web server, not `file://`).
 - New icon: add one SVG file in `brand/icons/` following the rules in its README, run `scripts/build.sh`, add nothing else (the showcase lists the folder, regenerate its grid).
+
+## Drawer link icons and groups
+
+- Link icons exist only in the side drawer. Put `<svg class="icon nav__icon" aria-hidden="true"><use href="#i-home"/></svg>` before the text inside the link (wrap the text in a `<span>`). `.nav__icon` is hidden on desktop, so the top bar stays text only.
+- Group (a route with sub routes): `<li class="nav__group"><button class="nav__group-toggle" type="button" aria-expanded="false" aria-controls="grp-x" data-zakpy-group>icon, text, chevron-down icon with class "icon icon--sm nav__chevron"</button><div class="nav__sub" id="grp-x"><ul><li><a>...</a></li></ul></div></li>`. In the drawer it is an accordion (smooth open, chevron turns). On desktop it is a dropdown under the link, closed by an outside click, Escape or choosing a sub link. Sub links are indented in the drawer. Copy the working example ("Components") from `showcase/index.html`.
+- Sprite ids are `i-<name>` on purpose: a plain `menu` id collided with the drawer's own `id="menu"`.
 

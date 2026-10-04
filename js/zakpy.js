@@ -126,6 +126,10 @@
   var savedTheme = store("zakpy-theme");
   root.setAttribute("data-theme", savedTheme || (window.matchMedia && matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"));
 
+  function closeGroups(except) {
+    document.querySelectorAll("[data-zakpy-group]").forEach(function (g) { if (g !== except) g.setAttribute("aria-expanded", "false"); });
+  }
+
   /* ---------- Side drawer (mobile menu) ---------- */
   var drawerOpener = null;
   function drawerParts() {
@@ -290,6 +294,17 @@
     var lg = el.closest("[data-zakpy-lang-set]");
     if (lg) { switchLang(lg.getAttribute("data-zakpy-lang-set")); return; }
 
+    /* Groups (links with sub routes): dropdown on desktop, accordion in the drawer */
+    var gt = el.closest("[data-zakpy-group]");
+    var desktop = window.innerWidth > 832;
+    if (gt) {
+      var opening = gt.getAttribute("aria-expanded") !== "true";
+      if (desktop) closeGroups(gt);
+      gt.setAttribute("aria-expanded", opening);
+      return;
+    }
+    if (desktop && !el.closest(".nav__group") || (desktop && el.closest(".nav__sub a"))) closeGroups();
+
     if (el.closest("[data-zakpy-nav-toggle]")) { drawerIsOpen() ? closeDrawer(true) : openDrawer(); return; }
     if (el.closest("[data-zakpy-nav-close]")) { closeDrawer(true); return; }
     if (drawerIsOpen() && el.closest(".nav__links a")) closeDrawer(false);
@@ -326,6 +341,8 @@
     if (e.key === "Escape") {
       if (root.classList.contains("intro-play")) { introFinish(); return; }
       if (drawerIsOpen()) { closeDrawer(true); return; }
+      var openGroup = document.querySelector('[data-zakpy-group][aria-expanded="true"]');
+      if (openGroup && window.innerWidth > 832) { closeGroups(); openGroup.focus(); return; }
     }
     var tab = e.target.closest && e.target.closest('.tabs [role="tab"]');
     if (!tab || (e.key !== "ArrowRight" && e.key !== "ArrowLeft")) return;

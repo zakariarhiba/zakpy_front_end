@@ -21,7 +21,7 @@ cp "$brand/logos/logo_main_transparent.png" "$out/logo.png"
   for f in "$brand"/icons/*.svg; do
     id="$(basename "$f" .svg)"
     inner="$(sed -e 's/^<svg[^>]*>//' -e 's/<\/svg>$//' "$f")"
-    echo "<symbol id=\"$id\" viewBox=\"0 0 24 24\">$inner</symbol>"
+    echo "<symbol id=\"i-$id\" viewBox=\"0 0 24 24\">$inner</symbol>"
   done
   echo '</svg>'
 } > "$out/zakpy-icons.svg"
