@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" dir="ltr" data-zakpy-intro>
+<html lang="en" dir="ltr" data-zakpy-intro data-zakpy-xp>
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -79,25 +79,28 @@
   </header>
 
   <main id="main">
-    <section class="hero" id="top">
+    <section class="hero hero--game" id="top">
       <div class="container">
-        <span class="badge" data-i18n="hero.badge">Version 0.1</span>
-        <h1 class="display mt-3" data-i18n="hero.title">One style for every ZAKPY site.</h1>
-        <p class="lead" data-i18n="hero.lead">Plain HTML, CSS and JavaScript.</p>
-        <div class="cluster">
-          <a class="btn" href="#components" data-i18n="hero.cta1">Explore the components</a>
-          <a class="link-arrow" href="#page" data-i18n="hero.cta2">See the page pattern</a>
-          <button class="btn btn--secondary btn--sm" type="button" data-zakpy-intro-replay data-i18n="hero.replay">Replay the intro</button>
-          <button class="btn btn--secondary btn--sm" type="button" data-zakpy-loader-demo data-i18n="hero.loader">Test the loader</button>
+        <div data-zakpy-stagger>
+          <span class="hud" data-i18n="hero.badge">Version 0.1</span>
+          <h1 class="display mt-3" data-zakpy-reveal="type" data-i18n="hero.title">One style for every ZAKPY site.</h1>
+          <p class="lead" data-i18n="hero.lead">Plain HTML, CSS and JavaScript.</p>
+          <div class="cluster">
+            <a class="btn" href="#components" data-i18n="hero.cta1">Explore the components</a>
+            <a class="link-arrow" href="#page" data-i18n="hero.cta2">See the page pattern</a>
+            <button class="btn btn--secondary btn--sm" type="button" data-zakpy-intro-replay data-i18n="hero.replay">Replay the intro</button>
+            <button class="btn btn--secondary btn--sm" type="button" data-zakpy-loader-demo data-i18n="hero.loader">Test the loader</button>
+          </div>
         </div>
+        <div data-zakpy-voxels="logo" aria-label="ZAKPY"></div>
       </div>
     </section>
 
     <section class="section section--alt" id="colors">
       <div class="container">
-        <h2 data-i18n="colors.title">Colours</h2>
+        <h2 data-zakpy-reveal="type" data-i18n="colors.title">Colours</h2>
         <p class="muted" data-i18n="colors.lead"></p>
-        <div class="grid mt-3">
+        <div class="grid mt-3" data-zakpy-stagger>
           <div><div class="swatch" style="background:var(--zakpy-red)"></div><strong>ZAKPY Red</strong><br><span class="small muted">#E53935, <span data-i18n="n.action"></span></span></div>
           <div><div class="swatch" style="background:var(--zakpy-red-dark)"></div><strong>Red dark</strong><br><span class="small muted">#BE2524, <span data-i18n="n.hover"></span></span></div>
           <div><div class="swatch" style="background:var(--zakpy-coral)"></div><strong>Coral</strong><br><span class="small muted">#FF716B, <span data-i18n="n.dark"></span></span></div>
@@ -111,10 +114,10 @@
 
     <section class="section" id="type">
       <div class="container stack">
-        <h2 data-i18n="type.title">Type</h2>
+        <h2 data-zakpy-reveal="type" data-i18n="type.title">Type</h2>
         <p class="display mb-0">Display 64</p>
         <h1 class="mb-0">Heading 1</h1>
-        <h2 class="mb-0">Heading 2</h2>
+        <h2 data-zakpy-reveal class="mb-0">Heading 2</h2>
         <h3 class="mb-0">Heading 3</h3>
         <p data-i18n="type.body"></p>
         <p class="small muted" data-i18n="type.small"></p>
@@ -124,13 +127,13 @@
 
     <section class="section" id="logo">
       <div class="container stack">
-        <h2 data-i18n="logo.title">Logo</h2>
+        <h2 data-zakpy-reveal="type" data-i18n="logo.title">Logo</h2>
         <p class="muted" data-i18n="logo.lead"></p>
-        <div class="grid">
-          <div class="logo-tile logo-tile--light"><a class="logo logo--lg logo--stacked" href="#logo"><img src="../dist/logo.png" alt="" width="80" height="80"><span>ZAKPY</span></a><span class="small" data-i18n="logo.white"></span></div>
-          <div class="logo-tile logo-tile--dark"><a class="logo logo--lg logo--stacked" href="#logo"><img src="../dist/logo.png" alt="" width="80" height="80"><span>ZAKPY</span></a><span class="small" data-i18n="logo.ink"></span></div>
-          <div class="logo-tile logo-tile--red"><a class="logo logo--lg logo--stacked" href="#logo"><img src="../dist/logo.png" alt="" width="80" height="80"><span>ZAKPY</span></a><span class="small" data-i18n="logo.red"></span></div>
-          <div class="logo-tile logo-tile--light">
+        <div class="grid" data-zakpy-stagger>
+          <div data-zakpy-reveal="pixels" class="logo-tile logo-tile--light"><a class="logo logo--lg logo--stacked" href="#logo"><img src="../dist/logo.png" alt="" width="80" height="80"><span>ZAKPY</span></a><span class="small" data-i18n="logo.white"></span></div>
+          <div data-zakpy-reveal="pixels" class="logo-tile logo-tile--dark"><a class="logo logo--lg logo--stacked" href="#logo"><img src="../dist/logo.png" alt="" width="80" height="80"><span>ZAKPY</span></a><span class="small" data-i18n="logo.ink"></span></div>
+          <div data-zakpy-reveal="pixels" class="logo-tile logo-tile--red"><a class="logo logo--lg logo--stacked" href="#logo"><img src="../dist/logo.png" alt="" width="80" height="80"><span>ZAKPY</span></a><span class="small" data-i18n="logo.red"></span></div>
+          <div data-zakpy-reveal="pixels" class="logo-tile logo-tile--light">
             <a class="logo" href="#logo"><img src="../dist/logo.png" alt="" width="48" height="48"><span>ZAKPY Academy</span></a>
             <a class="logo logo--sm" href="#logo"><img src="../dist/logo.png" alt="" width="36" height="36"><span>ZAKPY Solutions</span></a>
             <a class="logo logo--icon" href="#logo" aria-label="ZAKPY"><img src="../dist/logo.png" alt="" width="48" height="48"><span>ZAKPY</span></a>
@@ -140,9 +143,49 @@
       </div>
     </section>
 
+    <section class="section section--alt" id="motion">
+      <div class="container">
+        <h2 data-zakpy-reveal="type" data-i18n="motion.title">Motion</h2>
+        <p class="muted" data-zakpy-reveal data-i18n="motion.lead"></p>
+        <div class="grid mt-3" data-zakpy-stagger>
+          <div class="card"><span class="card__eyebrow" data-i18n="motion.c1.k"></span><h3 data-i18n="motion.c1.t"></h3><p class="muted" data-i18n="motion.c1.p"></p></div>
+          <div class="card"><span class="card__eyebrow" data-i18n="motion.c2.k"></span><h3 data-i18n="motion.c2.t"></h3><p class="muted" data-i18n="motion.c2.p"></p></div>
+          <div class="card"><span class="card__eyebrow" data-i18n="motion.c3.k"></span><h3 data-i18n="motion.c3.t"></h3><p class="muted" data-i18n="motion.c3.p"></p></div>
+        </div>
+        <div class="cluster mt-3">
+          <button class="btn" type="button" data-zakpy-reveal-replay="motion" data-i18n="motion.replay">Replay the reveals</button>
+          <a class="btn btn--secondary" href="#top" data-i18n="motion.top">Back to the top</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="levels" id="levels" data-zakpy-levels>
+      <div class="levels__stage">
+        <div class="levels__win container--narrow">
+          <div class="levels__body">
+            <article class="level" data-tint="red">
+              <span class="hud level__k" data-i18n="ch.1.k">01 / Academy</span>
+              <h2 data-zakpy-type data-i18n="ch.1.t">Learn to build</h2>
+              <p class="lead" data-i18n="ch.1.p"></p>
+            </article>
+            <article class="level" data-tint="lime">
+              <span class="hud level__k" data-i18n="ch.2.k">02 / Solutions</span>
+              <h2 data-zakpy-type data-i18n="ch.2.t">Build what works</h2>
+              <p class="lead" data-i18n="ch.2.p"></p>
+            </article>
+            <article class="level" data-tint="mist">
+              <span class="hud level__k" data-i18n="ch.3.k">03 / ZAKPY</span>
+              <h2 data-zakpy-type data-i18n="ch.3.t">One world, one style</h2>
+              <p class="lead" data-i18n="ch.3.p"></p>
+            </article>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <section class="section" id="icons">
       <div class="container">
-        <h2 data-i18n="icons.title">Icons</h2>
+        <h2 data-zakpy-reveal="type" data-i18n="icons.title">Icons</h2>
         <p class="muted" data-i18n="icons.lead"></p>
         <div class="cluster mt-3">
           <a class="btn" href="#icons"><svg class="icon" aria-hidden="true"><use href="#i-mail"/></svg><span data-i18n="icons.btn">Button with an icon</span></a>
@@ -199,7 +242,7 @@
 
     <section class="section section--alt" id="components">
       <div class="container stack stack--lg">
-        <h2 data-i18n="comp.title">Components</h2>
+        <h2 data-zakpy-reveal="type" data-i18n="comp.title">Components</h2>
 
         <div class="stack" id="c-buttons"><h3 data-i18n="comp.buttons">Buttons</h3>
           <div class="demo cluster">
@@ -212,7 +255,7 @@
         </div>
 
         <div class="stack" id="c-cards"><h3 data-i18n="comp.cards">Cards</h3>
-          <div class="grid">
+          <div class="grid" data-zakpy-stagger>
             <article class="card"><span class="card__eyebrow" data-i18n="card.academy"></span><h3 data-i18n="card.python.t"></h3><p data-i18n="card.python.p"></p><a class="link-arrow" href="#components" data-i18n="card.python.a"></a></article>
             <article class="card"><span class="card__eyebrow" data-i18n="card.solutions"></span><h3 data-i18n="card.sol.t"></h3><p data-i18n="card.sol.p"></p><a class="link-arrow" href="#components" data-i18n="card.sol.a"></a></article>
             <article class="card"><span class="card__eyebrow" data-i18n="card.personal"></span><h3 data-i18n="card.me.t"></h3><p data-i18n="card.me.p"></p><a class="link-arrow" href="#components" data-i18n="card.me.a"></a></article>
@@ -240,7 +283,7 @@
         </div>
 
         <div class="stack" id="c-stats"><h3 data-i18n="comp.stats">Stats and table</h3>
-          <div class="grid">
+          <div class="grid" data-zakpy-stagger>
             <div class="card stat"><span class="stat__label" data-i18n="s.students"></span><span class="stat__value">1,284</span><span class="stat__delta stat__delta--up" data-i18n="s.up"></span></div>
             <div class="card stat"><span class="stat__label" data-i18n="s.tickets"></span><span class="stat__value">7</span><span class="stat__delta stat__delta--down" data-i18n="s.down"></span></div>
           </div>
@@ -287,10 +330,10 @@
 
     <section class="section" id="page">
       <div class="container stack stack--lg">
-        <h2 data-i18n="page.title">Page pattern</h2>
+        <h2 data-zakpy-reveal="type" data-i18n="page.title">Page pattern</h2>
         <ol class="muted"><li data-i18n="page.1"></li><li data-i18n="page.2"></li><li data-i18n="page.3"></li><li data-i18n="page.4"></li><li data-i18n="page.5"></li></ol>
         <div class="section--inverse container" style="padding:var(--space-5) var(--space-4)">
-          <h2 data-i18n="cta.t"></h2>
+          <h2 data-zakpy-reveal="type" data-i18n="cta.t"></h2>
           <p class="lead" data-i18n="cta.p"></p>
           <a class="btn" href="#top" data-i18n="cta.b"></a>
         </div>
