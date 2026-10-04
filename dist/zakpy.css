@@ -165,10 +165,10 @@ code, kbd { font-family: ui-monospace, "SF Mono", Consolas, monospace; font-size
   border-radius: var(--radius-sm); font: 700 1rem/1.2 var(--font-body); text-decoration: none; cursor: pointer;
   transition: background var(--motion) var(--ease), color var(--motion) var(--ease), border-color var(--motion) var(--ease), transform var(--motion) var(--ease);
 }
-.btn:hover { --btn-bg: var(--accent-solid-hover); --btn-border: var(--accent-solid-hover); color: var(--btn-fg); }
+.btn:hover { --btn-border: var(--accent-solid-hover); color: var(--btn-fg); }
 .btn:active { transform: translateY(1px); }
 .btn--secondary { --btn-bg: transparent; --btn-fg: var(--text); --btn-border: var(--text); }
-.btn--secondary:hover { --btn-bg: var(--text); --btn-fg: var(--bg); --btn-border: var(--text); }
+.btn--secondary:hover { --btn-fg: var(--bg); --btn-border: var(--text); }
 .btn--sm { min-height: 2.5rem; padding: 0.375rem 1rem; font-size: 0.9375rem; }
 .btn--block { width: 100%; }
 .btn[disabled], .btn[aria-disabled="true"] { opacity: 0.5; pointer-events: none; }
@@ -384,113 +384,264 @@ code, kbd { font-family: ui-monospace, "SF Mono", Consolas, monospace; font-size
 .mt-0 { margin-top: 0; } .mt-3 { margin-top: var(--space-3); } .mt-4 { margin-top: var(--space-4); }
 .mb-0 { margin-bottom: 0; } .mb-3 { margin-bottom: var(--space-3); }
 .hide-mobile { } @media (max-width: 52rem) { .hide-mobile { display: none; } }
-/* 3D entry animation. Adapted from the Hunter game intro (pure CSS 3D, no library).
-   Plays while <html> has .intro-play (set by zakpy.js on first entry). Only transform and
-   opacity animate. While it plays, the page behind is hidden so there is no flash. */
+/* Entry intro: the ZAKPY logo builds itself in the dark, cube by cube, on the Hunter grid floor, then the ZAKPY window boots.
+   Plays while <html> has .intro-play (set by zakpy.js on first entry, about 3 s, tap or Escape skips).
+   Only transform and opacity animate. The page behind is hidden while it plays, so there is no flash.
+   The voxels use the shared .vstage and .vox rules from 09-motion.css. */
 .intro { display: none; }
 html.intro-play { background: var(--zakpy-ink); }
 html.intro-play body { overflow: hidden; }
 html.intro-play body > :not(.intro) { visibility: hidden; }
 
 html.intro-play .intro {
-  position: fixed; inset: 0; z-index: 10000; display: block;
-  background: radial-gradient(55% 40% at 50% 42%, rgba(229, 57, 53, 0.4) 0%, rgba(229, 57, 53, 0) 70%), #0b1220;
+  position: fixed; inset: 0; z-index: 10000; display: grid; place-items: center; align-content: center; gap: var(--space-4);
+  background: radial-gradient(55% 45% at 50% 40%, rgba(229, 57, 53, 0.28) 0%, rgba(229, 57, 53, 0) 70%), #0b1220;
   overflow: hidden; cursor: pointer; -webkit-tap-highlight-color: transparent;
-  animation: intro-exit 0.5s ease-in 2.35s forwards;
+  animation: intro-exit 0.45s var(--ease-io, ease-in) 2.55s forwards;
 }
-.intro__viewport { position: absolute; inset: 0; perspective: 800px; perspective-origin: 50% 42%; }
-.intro__scene { position: absolute; left: 50%; top: 42%; width: 0; height: 0; transform-style: preserve-3d; -webkit-transform-style: preserve-3d; animation: intro-dive 0.55s cubic-bezier(0.6, 0, 0.9, 0.4) 2.3s forwards; }
-@keyframes intro-dive { to { transform: translateZ(520px); } }
+.intro__logo { --u: clamp(56px, 11vw, 92px); margin-top: calc(var(--u) * -0.4); animation: intro-zoom 3s var(--ease-io, ease) both; }
+@keyframes intro-zoom { 0% { transform: scale(0.94); } 80% { transform: scale(1); } 100% { transform: scale(1.05); } }
 
-.intro__floor {
-  position: absolute; left: -300px; top: 40px; width: 600px; height: 600px;
-  background: repeating-linear-gradient(0deg, rgba(255, 113, 107, 0.35) 0 1px, transparent 1px 40px), repeating-linear-gradient(90deg, rgba(255, 113, 107, 0.35) 0 1px, transparent 1px 40px);
-  -webkit-mask-image: radial-gradient(circle at 50% 0%, #000 0%, transparent 65%); mask-image: radial-gradient(circle at 50% 0%, #000 0%, transparent 65%);
-  transform-origin: 50% 0; transform: rotateX(78deg);
-}
-.intro__ring { position: absolute; left: -150px; top: -150px; width: 300px; height: 300px; border-radius: 50%; border: 2px solid rgba(255, 113, 107, 0.9); background: radial-gradient(circle, rgba(229, 57, 53, 0.25) 0%, rgba(229, 57, 53, 0) 62%); transform: translateY(95px) rotateX(78deg) scale(0.1); animation: ring-grow 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) 0.1s forwards; will-change: transform; }
-.intro__ring--2 { border: 1px dashed rgba(183, 227, 106, 0.8); background: none; animation: ring-grow-2 2.4s linear 0.2s forwards; }
-@keyframes ring-grow { to { transform: translateY(95px) rotateX(78deg) scale(1); } }
-@keyframes ring-grow-2 { 0% { transform: translateY(95px) rotateX(78deg) rotateZ(0) scale(0.1); } 30% { transform: translateY(95px) rotateX(78deg) rotateZ(120deg) scale(1.25); } 100% { transform: translateY(95px) rotateX(78deg) rotateZ(400deg) scale(1.25); } }
+/* The floor tilts in first, the cubes then drop onto it in turn, the lime core last. */
+.intro .vstage__floor { --accent: #ff716b; opacity: 0; animation: intro-floor 0.7s var(--ease-out, ease-out) 0.1s forwards; }
+@keyframes intro-floor { from { opacity: 0; transform: perspective(600px) rotateX(86deg); } to { opacity: 1; transform: perspective(600px) rotateX(74deg); } }
+.intro .vox { opacity: 0; animation: vox-drop 640ms var(--ease-io, ease) calc(0.35s + var(--i) * 0.13s) both; }
+.intro .vox.is-core { animation-delay: 1.05s; }
+.intro .vstage__ring { animation: vstage-ring 1s var(--ease-out, ease-out) 1.5s forwards; }
+.intro .vstage__ring--2 { border-style: dashed; border-color: var(--zakpy-coral); animation: vstage-ring 1.3s var(--ease-out, ease-out) 1.6s forwards; }
 
-.intro__door { position: absolute; top: -110px; width: 90px; height: 220px; border: 1px solid rgba(255, 113, 107, 0.95); background: linear-gradient(180deg, rgba(229, 57, 53, 0.3), rgba(40, 8, 8, 0.95)), repeating-linear-gradient(0deg, rgba(255, 252, 245, 0.07) 0 1px, transparent 1px 10px); -webkit-backface-visibility: hidden; backface-visibility: hidden; will-change: transform; }
-.intro__door--left { left: -90px; border-radius: 8px 0 0 8px; transform-origin: 0 50%; animation: door-left 0.8s cubic-bezier(0.55, 0, 0.2, 1) 0.55s forwards; }
-.intro__door--right { left: 0; border-radius: 0 8px 8px 0; transform-origin: 100% 50%; animation: door-right 0.8s cubic-bezier(0.55, 0, 0.2, 1) 0.55s forwards; }
-@keyframes door-left { to { transform: rotateY(-108deg); } }
-@keyframes door-right { to { transform: rotateY(108deg); } }
+.intro__boot { position: absolute; top: 1.25rem; inset-inline-start: 1.25rem; margin: 0; font: 700 0.8125rem var(--hud-font, monospace); letter-spacing: 0.12em; color: rgba(183, 227, 106, 0.85); opacity: 0; animation: fade-in 0.2s steps(2) 0.15s forwards; }
 
-.intro__seam { position: absolute; left: -2px; top: -110px; width: 4px; height: 220px; background: linear-gradient(180deg, transparent, #fffcf5, transparent); transform: translateZ(1px) scaleY(0); animation: seam 0.7s ease-out forwards; }
-@keyframes seam { 60% { transform: translateZ(1px) scaleY(1); opacity: 1; } 100% { transform: translateZ(1px) scaleY(1); opacity: 0; } }
-
-.intro__cube { position: absolute; left: -45px; top: -45px; width: 90px; height: 90px; transform-style: preserve-3d; -webkit-transform-style: preserve-3d; transform: translateZ(-1400px) rotateX(-160deg) rotateY(250deg); animation: cube-in 1.1s cubic-bezier(0.16, 0.9, 0.3, 1) 0.8s forwards; will-change: transform; }
-.intro__face { position: absolute; inset: 0; display: grid; place-items: center; border: 1px solid rgba(255, 252, 245, 0.45); border-radius: 12px; background: linear-gradient(135deg, #e53935, #3a0b0b); -webkit-backface-visibility: hidden; backface-visibility: hidden; }
-.intro__face img { width: 78%; height: 78%; object-fit: contain; }
-.intro__face--front { transform: translateZ(45px); background: radial-gradient(circle, #1a2332 0%, #0b1220 100%); border-color: #ff716b; }
-.intro__face--back { transform: rotateY(180deg) translateZ(45px); }
-.intro__face--right { transform: rotateY(90deg) translateZ(45px); }
-.intro__face--left { transform: rotateY(-90deg) translateZ(45px); }
-.intro__face--top { transform: rotateX(90deg) translateZ(45px); }
-.intro__face--bottom { transform: rotateX(-90deg) translateZ(45px); }
-@keyframes cube-in { to { transform: translateZ(60px) rotateX(0) rotateY(0); } }
-
-.intro__window { position: absolute; left: 50%; top: calc(42% + 150px); width: min(300px, calc(100% - 32px)); padding: 0.8rem 1rem; border: 1px solid rgba(255, 113, 107, 0.85); border-radius: 10px; background: rgba(11, 18, 32, 0.9); text-align: center; transform: translateX(-50%) scaleY(0); animation: window-open 0.35s cubic-bezier(0.2, 0.9, 0.3, 1.2) 1.45s forwards; }
+/* The ZAKPY window: the same game window as the levels, it opens once the logo is built. */
+.intro__window { position: relative; width: min(320px, calc(100vw - 32px)); padding: 0.85rem 1rem 1rem; border: 2px solid #ff716b; border-radius: 12px; background: rgba(11, 18, 32, 0.92); box-shadow: 4px -4px 0 #df4f4e; transform: scaleY(0); opacity: 0; animation: window-open 0.32s var(--ease-pop, ease-out) 1.3s forwards; }
 .intro__window p { margin: 0; color: #fffcf5; }
-.intro__system { font: 800 1.3rem var(--font-display); letter-spacing: 0.5em; padding-inline-start: 0.5em; opacity: 0; animation: fade-in 0.3s ease 1.65s forwards; }
-.intro__welcome { font-size: 0.95rem; color: #b7e36a !important; opacity: 0; animation: fade-in 0.3s ease 1.85s forwards; }
+.intro__system { font: 800 1.25rem var(--font-display); letter-spacing: 0.5em; padding-inline-start: 0.5em; }
+.intro__welcome { min-height: 1.5em; margin-top: 0.25rem !important; font-size: 0.95rem; color: #b7e36a !important; }
+.intro__cur { display: inline-block; width: 0.5em; height: 0.95em; margin-inline-start: 0.08em; vertical-align: -0.12em; background: #b7e36a; animation: cur-blink 0.52s steps(1) infinite; }
+.intro__bar { display: flex; gap: 3px; margin-top: 0.75rem; }
+.intro__bar i { flex: 1; height: 6px; background: rgba(255, 252, 245, 0.12); }
+.intro__bar i::after { content: ""; display: block; height: 100%; background: #b7e36a; transform: scaleX(0); transform-origin: left; animation: seg-on 0.12s steps(2) calc(1.35s + var(--s) * 0.07s) forwards; }
 .intro__skip { position: absolute; inset-inline: 0; bottom: 1.5rem; text-align: center; margin: 0; font-size: 0.8rem; color: rgba(255, 252, 245, 0.55); }
-@keyframes window-open { to { transform: translateX(-50%) scaleY(1); } }
+@keyframes window-open { to { transform: scaleY(1); opacity: 1; } }
+@keyframes seg-on { to { transform: scaleX(1); } }
+@keyframes cur-blink { 50% { opacity: 0; } }
 @keyframes fade-in { to { opacity: 1; } }
-@keyframes intro-exit { to { opacity: 0; visibility: hidden; } }
+@keyframes intro-exit { to { opacity: 0; visibility: hidden; transform: scale(1.03); } }
 
 @media (prefers-reduced-motion: reduce) {
-  html.intro-play .intro, .intro__scene, .intro__ring, .intro__door, .intro__seam, .intro__cube, .intro__window, .intro__system, .intro__welcome { animation-duration: 1ms !important; animation-delay: 0ms !important; }
+  .intro__logo, .intro .vstage__floor, .intro .vox, .intro .vstage__ring, .intro__boot, .intro__window, .intro__bar i::after, .intro__cur { animation: none !important; }
+  .intro .vstage__floor, .intro .vox, .intro__boot, .intro__window { opacity: 1; transform: none; }
+  .intro .vstage__floor { transform: perspective(600px) rotateX(74deg); }
+  .intro__bar i::after { transform: none; }
   html.intro-play .intro { animation: intro-exit 0.3s ease-in 0.7s forwards !important; }
-  .intro__window { transform: translateX(-50%) scaleY(1); } .intro__system, .intro__welcome { opacity: 1; }
 }
-/* Loading overlay. Same look as the Hunter entry animation (dark scene, red glow, grid floor, rings, logo cube),
-   looping while something is pending. Built and shown by zakpy.js (window.Zakpy.loading). Only transform and opacity animate. */
+/* Loading overlay: the voxel logo on its grid floor, the four red cubes hop one after another around the plus
+   (the game is "thinking"), the lime core sends a ring each loop. Built and shown by zakpy.js (window.Zakpy.loading).
+   Only transform and opacity animate. The voxels use the shared .vstage and .vox rules from 09-motion.css. */
 .loader {
-  position: fixed; inset: 0; z-index: 9000; display: grid; place-items: center; align-content: center; gap: 0;
-  background: radial-gradient(55% 40% at 50% 40%, rgba(229, 57, 53, 0.4) 0%, rgba(229, 57, 53, 0) 70%), rgba(11, 18, 32, 0.94);
-  opacity: 0; visibility: hidden; transition: opacity 220ms var(--ease), visibility 220ms; cursor: progress;
+  position: fixed; inset: 0; z-index: 9000; display: grid; place-items: center; align-content: center; gap: var(--space-3);
+  background: radial-gradient(55% 45% at 50% 40%, rgba(229, 57, 53, 0.24) 0%, rgba(229, 57, 53, 0) 70%), rgba(11, 18, 32, 0.95);
+  opacity: 0; visibility: hidden; transition: opacity 220ms var(--ease); cursor: progress;
 }
 .loader.is-on { opacity: 1; visibility: visible; }
-.loader__stage { position: relative; width: 220px; height: 190px; perspective: 700px; perspective-origin: 50% 35%; }
-.loader__floor {
-  position: absolute; left: 50%; top: 105px; width: 420px; height: 420px; margin-inline-start: -210px;
-  background: repeating-linear-gradient(0deg, rgba(255, 113, 107, 0.35) 0 1px, transparent 1px 36px), repeating-linear-gradient(90deg, rgba(255, 113, 107, 0.35) 0 1px, transparent 1px 36px);
-  -webkit-mask-image: radial-gradient(circle at 50% 0%, #000 0%, transparent 62%); mask-image: radial-gradient(circle at 50% 0%, #000 0%, transparent 62%);
-  transform-origin: 50% 0; transform: rotateX(78deg);
+.loader:not(.is-on) { transition: opacity 220ms var(--ease), visibility 0s 220ms; }
+.loader__logo { --u: 44px; }
+.loader .vstage__floor { --accent: #ff716b; }
+
+/* One loop is 1.6 s: each red cube hops in turn, the core rings at the end of the round. */
+.loader.is-on .vox:not(.is-core) { animation: vox-hop 1.6s var(--ease-io) calc(var(--i) * 0.2s) infinite; }
+@keyframes vox-hop {
+  0% { transform: translate3d(0, 0, 0); }
+  9% { transform: translate3d(0, calc(var(--u) * -0.34), 0); }
+  18% { transform: translate3d(0, 0, 0) scale(1.03, 0.94); }
+  24%, 100% { transform: translate3d(0, 0, 0); }
 }
-.loader__ring { position: absolute; left: 50%; top: 78px; width: 190px; height: 190px; margin-inline-start: -95px; border-radius: 50%; border: 2px solid rgba(255, 113, 107, 0.9); background: radial-gradient(circle, rgba(229, 57, 53, 0.25) 0%, rgba(229, 57, 53, 0) 62%); transform: rotateX(78deg); animation: loader-pulse 1.8s ease-in-out infinite; }
-.loader__ring--2 { border: 1px dashed rgba(183, 227, 106, 0.85); background: none; width: 250px; height: 250px; margin-inline-start: -125px; top: 48px; animation: loader-ring 5s linear infinite; }
-@keyframes loader-pulse { 50% { transform: rotateX(78deg) scale(1.12); opacity: 0.7; } }
-@keyframes loader-ring { to { transform: rotateX(78deg) rotateZ(360deg); } }
+.loader.is-on .vstage__ring { animation: loader-ring 1.6s var(--ease-out) 0.8s infinite; }
+.loader.is-on .vstage__ring--2 { display: none; }
+@keyframes loader-ring { 0% { opacity: 0.85; transform: scale(0.3); } 45% { opacity: 0; transform: scale(1.25); } 100% { opacity: 0; transform: scale(1.25); } }
 
-.loader__cube { position: absolute; left: 50%; top: 30px; width: 64px; height: 64px; margin-inline-start: -32px; transform-style: preserve-3d; -webkit-transform-style: preserve-3d; transform: rotateX(-18deg) rotateY(30deg); animation: loader-spin 3.2s linear infinite, loader-float 1.8s ease-in-out infinite alternate; will-change: transform; }
-.loader__face { position: absolute; inset: 0; display: grid; place-items: center; border: 1px solid rgba(255, 252, 245, 0.45); border-radius: 10px; background: linear-gradient(135deg, #e53935, #3a0b0b); -webkit-backface-visibility: hidden; backface-visibility: hidden; }
-.loader__face img { width: 76%; height: 76%; object-fit: contain; }
-.loader__face--logo { background: radial-gradient(circle, #1a2332 0%, #0b1220 100%); border-color: #ff716b; }
-.loader__face--front { transform: translateZ(32px); }
-.loader__face--back { transform: rotateY(180deg) translateZ(32px); }
-.loader__face--right { transform: rotateY(90deg) translateZ(32px); }
-.loader__face--left { transform: rotateY(-90deg) translateZ(32px); }
-.loader__face--top { transform: rotateX(90deg) translateZ(32px); }
-.loader__face--bottom { transform: rotateX(-90deg) translateZ(32px); }
-@keyframes loader-spin { to { transform: rotateX(-18deg) rotateY(390deg); } }
-@keyframes loader-float { from { top: 38px; } to { top: 22px; } }
-
-.loader__window { position: relative; width: min(260px, calc(100vw - 32px)); margin-top: var(--space-1); padding: 0.75rem 1rem 0.9rem; border: 1px solid rgba(255, 113, 107, 0.85); border-radius: 10px; background: rgba(11, 18, 32, 0.9); text-align: center; overflow: hidden; }
+.loader__window { width: min(260px, calc(100vw - 32px)); padding: 0.75rem 1rem 0.9rem; border: 2px solid #ff716b; border-radius: 12px; background: rgba(11, 18, 32, 0.92); box-shadow: 4px -4px 0 #df4f4e; }
 .loader__window p { margin: 0; color: #fffcf5; }
 .loader__system { font: 800 1.15rem var(--font-display); letter-spacing: 0.5em; padding-inline-start: 0.5em; }
 .loader__text { font-size: 0.95rem; color: #b7e36a !important; }
-.loader__bar { position: absolute; inset-inline: 0; bottom: 0; height: 3px; background: rgba(255, 252, 245, 0.12); overflow: hidden; }
-.loader__bar::after { content: ""; position: absolute; top: 0; bottom: 0; width: 40%; background: linear-gradient(90deg, transparent, #ff716b, transparent); animation: loader-scan 1.1s linear infinite; }
-@keyframes loader-scan { from { transform: translateX(-100%); } to { transform: translateX(250%); } }
-[dir="rtl"] .loader__bar::after { animation-direction: reverse; }
+.loader__cur { display: inline-block; width: 0.5em; height: 0.95em; margin-inline-start: 0.15em; vertical-align: -0.12em; background: #b7e36a; animation: loader-blink 0.52s steps(1) infinite; }
+@keyframes loader-blink { 50% { opacity: 0; } }
+.loader__bar { display: flex; gap: 3px; margin-top: 0.6rem; }
+.loader__bar i { flex: 1; height: 6px; background: rgba(255, 252, 245, 0.12); }
+.loader.is-on .loader__bar i { animation: loader-seg 1.6s steps(1) calc(var(--s) * 0.16s) infinite; }
+@keyframes loader-seg { 0% { background: #b7e36a; } 18%, 100% { background: rgba(255, 252, 245, 0.12); } }
+[dir="rtl"] .loader__system { letter-spacing: 0; padding: 0; }
 
 @media (prefers-reduced-motion: reduce) {
   .loader { transition-duration: 1ms; }
-  .loader__cube, .loader__ring, .loader__ring--2 { animation: none; }
-  .loader__bar::after { animation: none; width: 100%; opacity: 0.6; }
+  .loader.is-on .vox, .loader.is-on .vstage__ring, .loader__cur, .loader.is-on .loader__bar i { animation: none !important; }
+  .loader__bar i { background: rgba(183, 227, 106, 0.6); }
+}
+/* Motion layer: the ZAKPY game. Everything comes from the logo: voxel cubes in an oblique projection
+   (dark red front, lighter red top and side, cream outline, lime core) and from the Hunter game (grid floor,
+   rings, the ZAKPY window). Calm: short moves, one thing at a time. Only transform and opacity animate.
+   Content is visible without JS and under prefers-reduced-motion: things hide only while <html> has .motion. */
+:root {
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-io: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-pop: cubic-bezier(0.34, 1.45, 0.64, 1);   /* small game overshoot */
+  --vox-front: var(--zakpy-red-dark);
+  --vox-face: #df4f4e;                               /* the lighter red of the logo's top and side faces */
+  --vox-line: var(--zakpy-warm-white);
+  --vox-core: var(--zakpy-lime);
+  --ex: 5px;                                         /* depth of extruded keys, toward the top right like the logo */
+  --hud-font: ui-monospace, "SF Mono", "Cascadia Mono", Consolas, monospace;
+}
+
+/* ---------- HUD label: small monospace line with a voxel, like a game status ---------- */
+.hud { display: inline-flex; align-items: center; gap: 0.6rem; font: 700 0.8125rem/1 var(--hud-font); letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); }
+.hud::before { content: ""; flex: none; width: 9px; height: 9px; background: var(--vox-front); box-shadow: 3px -3px 0 var(--vox-face); margin-top: 3px; }
+[dir="rtl"] .hud { letter-spacing: 0; font-family: var(--font-ar); }
+
+/* ---------- Spawn reveal: data-zakpy-reveal (pop in), ="fade", ="type" (headings), ="pixels" (blocks); parent data-zakpy-stagger ---------- */
+.motion [data-zakpy-reveal]:not(.is-in) { opacity: 0; }
+.motion [data-zakpy-reveal=""]:not(.is-in), .motion [data-zakpy-reveal="up"]:not(.is-in) { transform: translateY(18px) scale(0.97); }
+[data-zakpy-reveal].is-in { transition: opacity 500ms var(--ease-out) var(--d, 0ms), transform 700ms var(--ease-pop) var(--d, 0ms); }
+.motion [data-zakpy-reveal].is-in { opacity: 1; transform: none; }
+
+/* Type: the heading types in like a game dialog, with a lime block cursor. The untyped rest keeps its space, so nothing jumps. */
+.motion [data-zakpy-reveal="type"]:not(.is-in) { opacity: 0; }
+[data-zakpy-reveal="type"].is-in { transition: none; }
+.zt-rest { opacity: 0; }
+.zt-cur { position: relative; display: inline-block; width: 0; }
+.zt-cur::after { content: ""; position: absolute; inset-inline-start: 0.06em; bottom: -0.1em; width: 0.5em; height: 0.92em; background: var(--vox-core); animation: zt-blink 520ms steps(1) infinite; }
+@keyframes zt-blink { 50% { opacity: 0; } }
+
+/* Pixels: the block is uncovered cell by cell, a few cells flash brand colours. */
+.motion [data-zakpy-reveal="pixels"]:not(.is-in):not(.has-px) { opacity: 0; }
+.motion [data-zakpy-reveal="pixels"].has-px:not(.is-in), .motion [data-zakpy-reveal="pixels"].is-in { opacity: 1; transform: none; transition: none; }
+.has-px { position: relative; }
+.zpx { position: absolute; inset: -1px; z-index: 3; display: grid; grid-template-columns: repeat(var(--cols), 1fr); grid-auto-rows: 1fr; pointer-events: none; }
+.zpx i { background: var(--px-cover, var(--bg)); transition: opacity 260ms steps(3) var(--pd, 0ms); }
+.zpx i.c-red { background: var(--vox-front); } .zpx i.c-lime { background: var(--vox-core); } .zpx i.c-face { background: var(--vox-face); }
+.is-in > .zpx i { opacity: 0; }
+
+/* ---------- Voxels: cubes drawn like the logo (SVG made by js/motion.js) ---------- */
+.vox { position: absolute; width: calc(var(--u) * 1.47); height: calc(var(--u) * 1.47); left: calc(var(--x) * var(--u)); top: calc(var(--y) * var(--u) - var(--u) * 0.47); overflow: visible; transform: translate3d(0, var(--lift, 0px), 0); transition: transform 380ms var(--ease-pop); }
+.vox .f { fill: var(--vox-front); } .vox .t, .vox .s { fill: var(--vox-face); } .vox.is-core .f { fill: var(--vox-core); }
+.vox polygon { stroke: var(--vox-line); stroke-width: 0.075; stroke-linejoin: round; }
+.vox.is-core .t, .vox.is-core .s { fill: #8fc24b; } /* a darker lime for the core's top and side, never olive */
+.motion .vox.is-wait { opacity: 0; }
+.vox.is-drop { animation: vox-drop 640ms var(--ease-io) var(--vd, 0ms) both; }
+@keyframes vox-drop {
+  0% { transform: translate3d(0, calc(var(--u) * -3.5), 0); opacity: 0; }
+  12% { opacity: 1; }
+  70% { transform: translate3d(0, 0, 0) scale(1.04, 0.93); }
+  86% { transform: translate3d(0, calc(var(--u) * -0.1), 0) scale(0.98, 1.02); }
+  100% { transform: translate3d(0, 0, 0); opacity: 1; }
+}
+
+/* The stage: the logo built from five voxels over a perspective grid floor, like the Hunter intro. */
+.vstage { --u: clamp(48px, 7vw, 88px); position: relative; width: calc(var(--u) * 3.47); height: calc(var(--u) * 3.47); }
+.vstage__cubes { position: absolute; inset: calc(var(--u) * 0.47) 0 0 0; }
+.vstage__floor {
+  position: absolute; left: 50%; top: 88%; width: calc(var(--u) * 9); height: calc(var(--u) * 5); margin-inline-start: calc(var(--u) * -4.5);
+  background: repeating-linear-gradient(0deg, color-mix(in srgb, var(--accent) 32%, transparent) 0 1px, transparent 1px calc(var(--u) / 2)), repeating-linear-gradient(90deg, color-mix(in srgb, var(--accent) 32%, transparent) 0 1px, transparent 1px calc(var(--u) / 2));
+  -webkit-mask-image: radial-gradient(circle at 50% 0%, #000 0%, transparent 62%); mask-image: radial-gradient(circle at 50% 0%, #000 0%, transparent 62%);
+  transform-origin: 50% 0; transform: perspective(600px) rotateX(74deg); pointer-events: none;
+}
+.vstage__ring { position: absolute; left: 50%; top: 54%; width: calc(var(--u) * 3); height: calc(var(--u) * 3); margin: calc(var(--u) * -1.5) 0 0 calc(var(--u) * -1.5); border-radius: 50%; border: 2px solid var(--vox-core); opacity: 0; pointer-events: none; }
+.vstage__ring.is-on { animation: vstage-ring 900ms var(--ease-out) forwards; }
+@keyframes vstage-ring { 0% { opacity: 0.9; transform: scale(0.3); } 100% { opacity: 0; transform: scale(1.35); } }
+.vstage .vox { cursor: pointer; }
+.vstage.is-idle .vox:hover { --lift: -6px; }
+.vstage.is-idle .vstage__ring { animation: vstage-pulse 5s var(--ease-out) 1.2s infinite; }
+@keyframes vstage-pulse { 0% { opacity: 0.7; transform: scale(0.3); } 36% { opacity: 0; transform: scale(1.3); } 100% { opacity: 0; transform: scale(1.3); } }
+
+/* The grid floor reaches past the stage on purpose; the section around it clips it so the page never gets wider than the screen. */
+.hero--game, section:has(> .container > .vstage), section:has(.vstage) { overflow-x: clip; }
+
+/* Game hero layout: text and the voxel stage side by side, stage on top on small screens. */
+.hero--game > .container { display: grid; gap: var(--space-5); align-items: center; grid-template-columns: minmax(0, 1fr) auto; }
+.hero--game .vstage { justify-self: center; margin: var(--space-2) var(--space-4) calc(var(--u) * 0.9); }
+@media (max-width: 52rem) { .hero--game > .container { grid-template-columns: 1fr; } .hero--game .vstage { order: -1; --u: 46px; justify-self: center; margin: 0 0 calc(var(--u) * 0.8); } }
+
+/* ---------- Levels: a game window pinned in the middle of the screen. Level, tint, XP bar and voxel stack change as you scroll.
+   Markup: section.levels[data-zakpy-levels] > .levels__stage > .levels__win > article.level[data-tint] (x n)
+   On every screen size, phones included. Without JS, under reduced motion or on very short screens it is a plain stack of tinted cards. ---------- */
+.level, .levels__win { --tint: var(--bg-alt); }
+.levels__win { display: grid; gap: var(--space-3); }
+.level { position: relative; padding: var(--space-5) var(--space-4); background: var(--tint); border: 2px solid var(--border); border-radius: var(--radius-sm); }
+.levels [data-tint="red"] { --tint: color-mix(in srgb, var(--accent) 9%, var(--surface)); }
+.levels [data-tint="lime"] { --tint: color-mix(in srgb, var(--zakpy-lime) 20%, var(--surface)); }
+.levels [data-tint="mist"] { --tint: var(--bg-alt); }
+:root[data-theme="dark"] .levels [data-tint="lime"] { --tint: color-mix(in srgb, var(--zakpy-lime) 7%, var(--surface)); }
+.level__k { display: flex; margin-bottom: var(--space-2); }
+.level p { max-width: 32rem; }
+.levels__bar, .levels__xp, .levels__stack, .levels__flash { display: none; }
+.levels__body { display: contents; }
+
+.levels.is-pinned { --hold: 75vh; height: calc(100vh + (var(--n) - 1) * 85vh + var(--hold)); } /* --hold: extra scroll on the last level, time to read it */
+.levels.is-pinned .levels__stage { position: sticky; top: 0; height: 100vh; height: 100svh; padding-top: 4.5rem; display: grid; place-items: center; } /* padding: the sticky navbar is 4.5rem tall, the window centres below it */
+.levels.is-pinned .levels__win {
+  position: relative; width: min(100% - 2 * var(--space-4), 46rem); min-height: min(30rem, 76vh); gap: 0; grid-template-rows: auto 1fr auto;
+  background: var(--tint); border: 2px solid var(--accent); border-radius: 12px;
+  box-shadow: var(--ex) calc(var(--ex) * -1) 0 0 var(--vox-face); transition: background-color 700ms var(--ease-io);
+}
+.levels.is-pinned .levels__bar { display: flex; align-items: center; justify-content: space-between; gap: var(--space-2); padding: 0.75rem var(--space-3); border-bottom: 2px solid var(--accent); border-radius: 10px 10px 0 0; background: color-mix(in srgb, var(--accent) 12%, var(--surface)); font: 800 0.875rem/1 var(--hud-font); letter-spacing: 0.3em; color: var(--text); }
+.levels__lv { letter-spacing: 0.12em; color: var(--text-muted); }
+[dir="rtl"] .levels__bar, [dir="rtl"] .levels__lv { letter-spacing: 0; }
+.levels.is-pinned .levels__body { position: relative; display: grid; grid-template-areas: "c"; align-items: center; overflow: hidden; }
+.levels.is-pinned .level { grid-area: c; background: transparent; border: 0; padding: var(--space-5) calc(var(--space-6) + 24px) var(--space-5) var(--space-4); opacity: 0; transform: translateY(14px) scale(0.98); transition: opacity 360ms var(--ease-io), transform 600ms var(--ease-pop); pointer-events: none; }
+.levels.is-pinned .level.is-active { opacity: 1; transform: none; transition-delay: 220ms; pointer-events: auto; }
+.levels.is-pinned .levels__xp { display: flex; gap: 4px; padding: 0 var(--space-3) var(--space-3); }
+.levels__xp i { flex: 1; height: 10px; background: color-mix(in srgb, var(--text) 12%, transparent); transition: background-color 200ms steps(2); }
+.levels__xp i.is-on { background: var(--vox-core); }
+.levels.is-pinned .levels__stack { --u: 30px; display: block; position: absolute; inset-inline-end: var(--space-4); bottom: var(--space-3); width: calc(var(--u) * 1.47); height: calc(var(--u) * (var(--n) + 0.47)); }
+.levels.is-pinned .levels__flash { display: block; position: absolute; top: 0.45rem; left: 50%; z-index: 4; padding: 0.35rem 0.7rem; border-radius: 6px; font: 800 0.8125rem/1 var(--hud-font); letter-spacing: 0.16em; text-transform: uppercase; white-space: nowrap; color: var(--zakpy-ink); background: var(--vox-core); box-shadow: 3px -3px 0 color-mix(in srgb, var(--vox-core) 55%, var(--zakpy-ink)); opacity: 0; transform: translate(-50%, 6px) scale(0.8); pointer-events: none; }
+[dir="rtl"] .levels__flash { letter-spacing: 0; font-family: var(--font-ar); }
+.levels__flash.is-on { animation: lv-flash 1300ms var(--ease-pop) forwards; }
+/* Phones: the same game window, tighter. */
+@media (max-width: 40rem) {
+  .levels.is-pinned .levels__win { width: calc(100% - 2 * var(--space-2)); min-height: min(27rem, 68svh); --ex: 4px; }
+  .levels.is-pinned .levels__bar { padding: 0.6rem var(--space-2); font-size: 0.75rem; letter-spacing: 0.2em; }
+  .levels.is-pinned .level { padding: var(--space-4) calc(var(--space-2) + 44px) var(--space-4) var(--space-3); }
+  .levels.is-pinned .level h2 { font-size: 1.625rem; }
+  .levels.is-pinned .level .lead { font-size: 1.0625rem; }
+  .levels.is-pinned .levels__stack { --u: 22px; inset-inline-end: var(--space-2); bottom: var(--space-2); }
+  .levels.is-pinned .levels__xp { gap: 3px; padding: 0 var(--space-2) var(--space-2); }
+  .levels__xp i { height: 8px; }
+}
+@keyframes lv-flash { 0% { opacity: 0; transform: translate(-50%, 6px) scale(0.8); } 18% { opacity: 1; transform: translate(-50%, 0) scale(1); } 75% { opacity: 1; transform: translate(-50%, 0) scale(1); } 100% { opacity: 0; transform: translate(-50%, -4px) scale(0.96); } }
+
+/* ---------- Scroll XP bar: html[data-zakpy-xp] adds a segmented bar at the top that fills as you read ---------- */
+.xpbar { position: fixed; inset-inline: 0; top: 0; z-index: 60; height: 4px; display: flex; gap: 2px; pointer-events: none; }
+.xpbar i { flex: 1; background: var(--vox-core); transform: scaleY(0); transform-origin: top; transition: transform 160ms steps(2); }
+.xpbar i.is-on { transform: scaleY(1); }
+
+/* ---------- Header: stays sticky on every screen (owner decision), soft shadow after scrolling ---------- */
+.nav { transition: background-color 300ms var(--ease), box-shadow 300ms var(--ease); }
+.nav.is-scrolled { background: color-mix(in srgb, var(--bg) 97%, transparent); box-shadow: 0 10px 30px rgba(17, 24, 39, 0.07); }
+:root[data-theme="dark"] .nav.is-scrolled { box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35); }
+
+/* Desktop nav: a small voxel pops in on hover and marks the current page. */
+@media (min-width: 52.0625rem) {
+  .nav__links > li > a { display: inline-flex; align-items: center; border-bottom-color: transparent !important; }
+  .nav__links > li > a::before { content: ""; width: 8px; height: 8px; margin-inline-end: 9px; background: var(--vox-front); box-shadow: 3px -3px 0 var(--vox-face); transform: scale(0); transition: transform 320ms var(--ease-pop); }
+  .nav__links > li > a:hover::before, .nav__links > li > a:focus-visible::before { transform: scale(1); }
+  .nav__links > li > a[aria-current="page"]::before { transform: scale(1); background: var(--vox-core); }
+  .nav__group-toggle { border-bottom-color: transparent !important; }
+}
+
+/* ---------- Buttons are keys: an extruded edge toward the top right, like the logo; they press into it ---------- */
+.btn { --btn-edge: var(--vox-face); box-shadow: var(--ex) calc(var(--ex) * -1) 0 0 var(--btn-edge); transition: background var(--motion) var(--ease), color var(--motion) var(--ease), border-color var(--motion) var(--ease), transform 160ms var(--ease-out), box-shadow 160ms var(--ease-out); }
+.btn:hover { transform: translate(2px, -2px); box-shadow: calc(var(--ex) - 2px) calc((var(--ex) - 2px) * -1) 0 0 var(--btn-edge); }
+.btn:active { transform: translate(var(--ex), calc(var(--ex) * -1)); box-shadow: 0 0 0 0 var(--btn-edge); }
+.btn--secondary { --btn-edge: color-mix(in srgb, var(--text) 30%, transparent); }
+.btn--sm { --ex: 3px; }
+.btn[disabled], .btn[aria-disabled="true"] { box-shadow: none; }
+:root[data-theme="dark"] .btn { --btn-edge: color-mix(in srgb, var(--zakpy-coral) 45%, var(--zakpy-ink)); }
+:root[data-theme="dark"] .btn--secondary { --btn-edge: color-mix(in srgb, var(--text) 25%, transparent); }
+
+@media (prefers-reduced-motion: reduce) {
+  .vox, .vox.is-drop, .vstage__ring, .vstage.is-idle .vstage__ring, .levels__flash, .zt-cur::after { animation: none !important; transition: none !important; }
+  .nav, .zpx i, .xpbar i, .levels__xp i { transition: none !important; }
+  [data-zakpy-reveal] { transition: none !important; transform: none !important; opacity: 1 !important; }
+  .zpx { display: none; }
+  .btn:hover, .btn:active { transform: none; }
 }
