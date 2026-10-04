@@ -72,9 +72,9 @@ A full-screen overlay with the Hunter logo cube (spinning over a grid floor, rin
 
 44 outline icons in `brand/icons/` (one SVG per file, 24 px grid, 2 px stroke, round ends, `currentColor`). Themes come from the Instagram highlight covers (monitor, chat, heart, calendar, check, home, mail, cloud, star, award, pen, code, lightbulb, book) plus interface icons (menu, close, search, arrows, chevrons, plus, external, download, sun, moon, globe, user, lock, settings, bell, info, alert, clock, shield, play, folder, phone) and social networks (whatsapp, instagram, youtube, github, linkedin).
 
-- `scripts/build.sh` builds the sprite `dist/zakpy-icons.svg` (one `<symbol>` per file, file name is the id). Copy it next to `zakpy.css`.
-- Use: `<svg class="icon" aria-hidden="true"><use href="zakpy-icons.svg#home"/></svg>`. Sizes `icon--sm`, `icon--lg`, colour `icon--accent` (red) or inherited text colour. Inside `.btn` the size adjusts itself. Add `icon--flip` to arrows so they mirror in Darija.
+- `scripts/build.sh` builds the sprite (one `<symbol>` per file, file name is the id) and embeds it in `dist/zakpy.js`, which adds it to the page at load. Nothing else to copy.
+- Use: `<svg class="icon" aria-hidden="true"><use href="#home"/></svg>`. Sizes `icon--sm`, `icon--lg`, colour `icon--accent` (red) or inherited text colour. Inside `.btn` the size adjusts itself. Add `icon--flip` to arrows so they mirror in Darija.
 - An icon alone needs an `aria-label` on its button, never an empty control. With text next to it, keep `aria-hidden="true"`.
-- The sprite is loaded with an external `<use>`: it needs a web server (same origin), not `file://`.
+- `dist/zakpy-icons.svg` is also written for sites that prefer an external file (`href="zakpy-icons.svg#home"`, needs a web server, not `file://`).
 - New icon: add one SVG file in `brand/icons/` following the rules in its README, run `scripts/build.sh`, add nothing else (the showcase lists the folder, regenerate its grid).
 

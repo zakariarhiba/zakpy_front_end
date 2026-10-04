@@ -25,4 +25,11 @@ cp "$brand/logos/logo_main_transparent.png" "$out/logo.png"
   done
   echo '</svg>'
 } > "$out/zakpy-icons.svg"
+# The same sprite is embedded in dist/zakpy.js and added to the page at load, so <use href="#home"/> works anywhere
+# (file://, any server root). dist/zakpy-icons.svg stays for sites that prefer the external file.
+{
+  printf '\n;(function () {\n  var sprite = `'
+  cat "$out/zakpy-icons.svg" | sed -e 's/style="display:none"/width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"/'
+  printf '`;\n  function add() { if (document.getElementById("zakpy-sprite")) return; var d = document.createElement("div"); d.id = "zakpy-sprite"; d.hidden = true; d.innerHTML = sprite; document.body.insertBefore(d, document.body.firstChild); }\n  if (document.body) add(); else document.addEventListener("DOMContentLoaded", add);\n})();\n'
+} >> "$out/zakpy.js"
 echo "Built $out ($(wc -c < "$out/zakpy.css") bytes css)"
