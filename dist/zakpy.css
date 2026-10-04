@@ -173,7 +173,7 @@ code, kbd { font-family: ui-monospace, "SF Mono", Consolas, monospace; font-size
 .nav__links a { text-decoration: none; font-weight: 500; padding-block: var(--space-1); border-bottom: 2px solid transparent; }
 .nav__links a:hover, .nav__links a[aria-current="page"] { border-bottom-color: var(--accent); color: var(--text); }
 .nav__tools { display: flex; align-items: center; gap: var(--space-1); }
-.nav__drawer-head, .nav__overlay, .icon-btn.nav__toggle { display: none; }
+.nav__drawer-head, .nav__drawer-tools, .nav__overlay, .icon-btn.nav__toggle { display: none; }
 
 /* Icon button (theme toggle, close). Always has an aria-label, never text only. */
 .icon-btn { display: inline-grid; place-items: center; width: 2.75rem; height: 2.75rem; padding: 0; background: transparent; color: var(--text); border: 2px solid var(--border); border-radius: var(--radius-sm); cursor: pointer; transition: background var(--motion) var(--ease), border-color var(--motion) var(--ease), transform var(--motion) var(--ease); }
@@ -206,7 +206,8 @@ code, kbd { font-family: ui-monospace, "SF Mono", Consolas, monospace; font-size
 @media (max-width: 52rem) {
   .nav { backdrop-filter: none; background: var(--bg); } /* backdrop-filter would trap the fixed drawer inside the bar */
   .nav__inner { gap: var(--space-1); }
-  .nav__tools { margin-inline-start: auto; }
+  .nav__tools { display: none; } /* language and theme live in the drawer on mobile */
+  .nav__logo { margin-inline-start: auto; } /* burger at the start, logo at the end */
   .icon-btn.nav__toggle { display: inline-grid; }
   .nav__overlay { display: block; position: fixed; inset: 0; z-index: 1; background: rgba(17, 24, 39, 0.55); opacity: 0; visibility: hidden; transition: opacity 280ms var(--ease), visibility 280ms; }
   body.nav-open .nav__overlay { opacity: 1; visibility: visible; }
@@ -228,7 +229,8 @@ code, kbd { font-family: ui-monospace, "SF Mono", Consolas, monospace; font-size
   .nav__links.is-open li:not(.nav__drawer-head) { opacity: 1; transform: none; }
   .nav__links.is-open li:nth-child(2) { transition-delay: 60ms; } .nav__links.is-open li:nth-child(3) { transition-delay: 100ms; }
   .nav__links.is-open li:nth-child(4) { transition-delay: 140ms; } .nav__links.is-open li:nth-child(5) { transition-delay: 180ms; }
-  .nav__links.is-open li:nth-child(6) { transition-delay: 220ms; }
+  .nav__links.is-open li:nth-child(6) { transition-delay: 220ms; } .nav__links.is-open li:nth-child(7) { transition-delay: 260ms; }
+  .nav__drawer-tools { display: flex; align-items: center; justify-content: space-between; gap: var(--space-2); padding: var(--space-3); margin-top: var(--space-2); border-top: 1px solid var(--border); }
 }
 @media (max-width: 26rem) { .lang-switch button { min-width: 2.25rem; padding: 0 0.4rem; } }
 

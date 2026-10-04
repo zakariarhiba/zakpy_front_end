@@ -38,7 +38,7 @@ Components: button, link with arrow, card, navigation, hero, badge, alert, form 
 
 ## Navigation, theme icon, intro
 
-- Mobile menu: three-line button (`.nav__toggle` with `.burger`) opens a side drawer with a slide transition, dimmed overlay, Escape and overlay close, focus handling. From the left in English and French, from the right in Darija. Copy the nav markup from `showcase/index.html`.
+- Mobile menu: three-line button (`.nav__toggle` with `.burger`) opens a side drawer with a slide transition, dimmed overlay, Escape and overlay close, focus handling. On mobile the burger is at the start of the bar and the logo at the end; the drawer opens from the same side as the burger (left in English and French, right in Darija). The language switch and theme toggle are hidden from the bar on mobile and appear at the bottom of the drawer (`.nav__drawer-tools`); on desktop they stay in the bar (`.nav__tools`). Copy the nav markup from `showcase/index.html`.
 - Dark mode is an icon button (moon in light mode, sun in dark mode, `.theme-toggle`) with a translated `aria-label`.
 - 3D intro: ported from the Hunter game (pure CSS 3D, about 3 seconds, tap or Escape skips, shorter with reduced motion; its text is always English). Plays once per browser session on pages with `data-zakpy-intro` on `<html>`. `?intro=1` forces it, `Zakpy.playIntro()` replays it.
 
