@@ -85,18 +85,19 @@
     document.dispatchEvent(new CustomEvent("zakpy:lang", { detail: { lang: code } }));
   }
 
-  /* Language change on click: fade the page out, swap text and direction while hidden, fade back in. */
+  /* Language change on click: swap at once, then let the new text fade in so the change is felt, not jarring. */
   var reduceMotion = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)");
   var langTimer = null;
   function switchLang(code) {
     if (code === current) return;
-    if (!document.body || (reduceMotion && reduceMotion.matches)) { applyLang(code, true); return; }
+    applyLang(code, true);
+    if (reduceMotion && reduceMotion.matches) return;
     clearTimeout(langTimer);
-    root.classList.add("lang-switching");
-    langTimer = setTimeout(function () {
-      applyLang(code, true);
-      setTimeout(function () { root.classList.remove("lang-switching"); }, 30);
-    }, 180);
+    document.querySelectorAll("[data-i18n]").forEach(function (el, i) { el.style.setProperty("--i", Math.min(i * 8, 280)); }); // gentle top-to-bottom stagger
+    root.classList.remove("lang-changed");
+    void root.offsetWidth; // restart the animation if the user switches again quickly
+    root.classList.add("lang-changed");
+    langTimer = setTimeout(function () { root.classList.remove("lang-changed"); }, 900);
   }
 
   /* ---------- Theme: data-zakpy-theme-toggle on an icon button ---------- */

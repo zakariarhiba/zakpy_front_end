@@ -38,8 +38,11 @@ code, kbd { font-family: ui-monospace, "SF Mono", Consolas, monospace; font-size
 .theme-fading, .theme-fading *, .theme-fading *::before, .theme-fading *::after {
   transition: background-color 350ms var(--ease), color 350ms var(--ease), border-color 350ms var(--ease), fill 350ms var(--ease), stroke 350ms var(--ease), box-shadow 350ms var(--ease) !important;
 }
-body > * { transition: opacity 180ms var(--ease); }
-.lang-switching body > *:not(.intro) { opacity: 0; }
+/* Language change: new text eases in (blur and rise), the pressed button pops */
+.lang-changed body > *:not(.intro) [data-i18n] { animation: lang-in 420ms var(--ease) both; animation-delay: calc(var(--i, 0) * 1ms); }
+.lang-changed .lang-switch [aria-pressed="true"] { animation: lang-pop 320ms var(--ease); }
+@keyframes lang-in { from { opacity: 0; transform: translateY(8px); filter: blur(3px); } to { opacity: 1; transform: none; filter: none; } }
+@keyframes lang-pop { 40% { transform: scale(1.12); } }
 .theme-toggle .icon-moon, :root[data-theme="dark"] .theme-toggle .icon-sun { animation: theme-icon-in 450ms var(--ease); }
 @keyframes theme-icon-in { from { opacity: 0; transform: rotate(-90deg) scale(0.4); } to { opacity: 1; transform: none; } }
-@media (prefers-reduced-motion: reduce) { .theme-toggle .icon-moon, :root[data-theme="dark"] .theme-toggle .icon-sun { animation: none; } body > * { transition: none; } }
+@media (prefers-reduced-motion: reduce) { .theme-toggle .icon-moon, :root[data-theme="dark"] .theme-toggle .icon-sun { animation: none; } .lang-changed [data-i18n], .lang-changed .lang-switch [aria-pressed] { animation: none !important; } }
