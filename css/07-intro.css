@@ -1,63 +1,51 @@
-/* 3D entry animation. Adapted from the Hunter game intro (pure CSS 3D, no library).
-   Plays while <html> has .intro-play (set by zakpy.js on first entry). Only transform and
-   opacity animate. While it plays, the page behind is hidden so there is no flash. */
+/* Entry intro: the ZAKPY logo builds itself in the dark, cube by cube, on the Hunter grid floor, then the ZAKPY window boots.
+   Plays while <html> has .intro-play (set by zakpy.js on first entry, about 3 s, tap or Escape skips).
+   Only transform and opacity animate. The page behind is hidden while it plays, so there is no flash.
+   The voxels use the shared .vstage and .vox rules from 09-motion.css. */
 .intro { display: none; }
 html.intro-play { background: var(--zakpy-ink); }
 html.intro-play body { overflow: hidden; }
 html.intro-play body > :not(.intro) { visibility: hidden; }
 
 html.intro-play .intro {
-  position: fixed; inset: 0; z-index: 10000; display: block;
-  background: radial-gradient(55% 40% at 50% 42%, rgba(229, 57, 53, 0.4) 0%, rgba(229, 57, 53, 0) 70%), #0b1220;
+  position: fixed; inset: 0; z-index: 10000; display: grid; place-items: center; align-content: center; gap: var(--space-4);
+  background: radial-gradient(55% 45% at 50% 40%, rgba(229, 57, 53, 0.28) 0%, rgba(229, 57, 53, 0) 70%), #0b1220;
   overflow: hidden; cursor: pointer; -webkit-tap-highlight-color: transparent;
-  animation: intro-exit 0.5s ease-in 2.35s forwards;
+  animation: intro-exit 0.45s var(--ease-io, ease-in) 2.55s forwards;
 }
-.intro__viewport { position: absolute; inset: 0; perspective: 800px; perspective-origin: 50% 42%; }
-.intro__scene { position: absolute; left: 50%; top: 42%; width: 0; height: 0; transform-style: preserve-3d; -webkit-transform-style: preserve-3d; animation: intro-dive 0.55s cubic-bezier(0.6, 0, 0.9, 0.4) 2.3s forwards; }
-@keyframes intro-dive { to { transform: translateZ(520px); } }
+.intro__logo { --u: clamp(56px, 11vw, 92px); margin-top: calc(var(--u) * -0.4); animation: intro-zoom 3s var(--ease-io, ease) both; }
+@keyframes intro-zoom { 0% { transform: scale(0.94); } 80% { transform: scale(1); } 100% { transform: scale(1.05); } }
 
-.intro__floor {
-  position: absolute; left: -300px; top: 40px; width: 600px; height: 600px;
-  background: repeating-linear-gradient(0deg, rgba(255, 113, 107, 0.35) 0 1px, transparent 1px 40px), repeating-linear-gradient(90deg, rgba(255, 113, 107, 0.35) 0 1px, transparent 1px 40px);
-  -webkit-mask-image: radial-gradient(circle at 50% 0%, #000 0%, transparent 65%); mask-image: radial-gradient(circle at 50% 0%, #000 0%, transparent 65%);
-  transform-origin: 50% 0; transform: rotateX(78deg);
-}
-.intro__ring { position: absolute; left: -150px; top: -150px; width: 300px; height: 300px; border-radius: 50%; border: 2px solid rgba(255, 113, 107, 0.9); background: radial-gradient(circle, rgba(229, 57, 53, 0.25) 0%, rgba(229, 57, 53, 0) 62%); transform: translateY(95px) rotateX(78deg) scale(0.1); animation: ring-grow 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) 0.1s forwards; will-change: transform; }
-.intro__ring--2 { border: 1px dashed rgba(183, 227, 106, 0.8); background: none; animation: ring-grow-2 2.4s linear 0.2s forwards; }
-@keyframes ring-grow { to { transform: translateY(95px) rotateX(78deg) scale(1); } }
-@keyframes ring-grow-2 { 0% { transform: translateY(95px) rotateX(78deg) rotateZ(0) scale(0.1); } 30% { transform: translateY(95px) rotateX(78deg) rotateZ(120deg) scale(1.25); } 100% { transform: translateY(95px) rotateX(78deg) rotateZ(400deg) scale(1.25); } }
+/* The floor tilts in first, the cubes then drop onto it in turn, the lime core last. */
+.intro .vstage__floor { --accent: #ff716b; opacity: 0; animation: intro-floor 0.7s var(--ease-out, ease-out) 0.1s forwards; }
+@keyframes intro-floor { from { opacity: 0; transform: perspective(600px) rotateX(86deg); } to { opacity: 1; transform: perspective(600px) rotateX(74deg); } }
+.intro .vox { opacity: 0; animation: vox-drop 640ms var(--ease-io, ease) calc(0.35s + var(--i) * 0.13s) both; }
+.intro .vox.is-core { animation-delay: 1.05s; }
+.intro .vstage__ring { animation: vstage-ring 1s var(--ease-out, ease-out) 1.5s forwards; }
+.intro .vstage__ring--2 { border-style: dashed; border-color: var(--zakpy-coral); animation: vstage-ring 1.3s var(--ease-out, ease-out) 1.6s forwards; }
 
-.intro__door { position: absolute; top: -110px; width: 90px; height: 220px; border: 1px solid rgba(255, 113, 107, 0.95); background: linear-gradient(180deg, rgba(229, 57, 53, 0.3), rgba(40, 8, 8, 0.95)), repeating-linear-gradient(0deg, rgba(255, 252, 245, 0.07) 0 1px, transparent 1px 10px); -webkit-backface-visibility: hidden; backface-visibility: hidden; will-change: transform; }
-.intro__door--left { left: -90px; border-radius: 8px 0 0 8px; transform-origin: 0 50%; animation: door-left 0.8s cubic-bezier(0.55, 0, 0.2, 1) 0.55s forwards; }
-.intro__door--right { left: 0; border-radius: 0 8px 8px 0; transform-origin: 100% 50%; animation: door-right 0.8s cubic-bezier(0.55, 0, 0.2, 1) 0.55s forwards; }
-@keyframes door-left { to { transform: rotateY(-108deg); } }
-@keyframes door-right { to { transform: rotateY(108deg); } }
+.intro__boot { position: absolute; top: 1.25rem; inset-inline-start: 1.25rem; margin: 0; font: 700 0.8125rem var(--hud-font, monospace); letter-spacing: 0.12em; color: rgba(183, 227, 106, 0.85); opacity: 0; animation: fade-in 0.2s steps(2) 0.15s forwards; }
 
-.intro__seam { position: absolute; left: -2px; top: -110px; width: 4px; height: 220px; background: linear-gradient(180deg, transparent, #fffcf5, transparent); transform: translateZ(1px) scaleY(0); animation: seam 0.7s ease-out forwards; }
-@keyframes seam { 60% { transform: translateZ(1px) scaleY(1); opacity: 1; } 100% { transform: translateZ(1px) scaleY(1); opacity: 0; } }
-
-.intro__cube { position: absolute; left: -45px; top: -45px; width: 90px; height: 90px; transform-style: preserve-3d; -webkit-transform-style: preserve-3d; transform: translateZ(-1400px) rotateX(-160deg) rotateY(250deg); animation: cube-in 1.1s cubic-bezier(0.16, 0.9, 0.3, 1) 0.8s forwards; will-change: transform; }
-.intro__face { position: absolute; inset: 0; display: grid; place-items: center; border: 1px solid rgba(255, 252, 245, 0.45); border-radius: 12px; background: linear-gradient(135deg, #e53935, #3a0b0b); -webkit-backface-visibility: hidden; backface-visibility: hidden; }
-.intro__face img { width: 78%; height: 78%; object-fit: contain; }
-.intro__face--front { transform: translateZ(45px); background: radial-gradient(circle, #1a2332 0%, #0b1220 100%); border-color: #ff716b; }
-.intro__face--back { transform: rotateY(180deg) translateZ(45px); }
-.intro__face--right { transform: rotateY(90deg) translateZ(45px); }
-.intro__face--left { transform: rotateY(-90deg) translateZ(45px); }
-.intro__face--top { transform: rotateX(90deg) translateZ(45px); }
-.intro__face--bottom { transform: rotateX(-90deg) translateZ(45px); }
-@keyframes cube-in { to { transform: translateZ(60px) rotateX(0) rotateY(0); } }
-
-.intro__window { position: absolute; left: 50%; top: calc(42% + 150px); width: min(300px, calc(100% - 32px)); padding: 0.8rem 1rem; border: 1px solid rgba(255, 113, 107, 0.85); border-radius: 10px; background: rgba(11, 18, 32, 0.9); text-align: center; transform: translateX(-50%) scaleY(0); animation: window-open 0.35s cubic-bezier(0.2, 0.9, 0.3, 1.2) 1.45s forwards; }
+/* The ZAKPY window: the same game window as the levels, it opens once the logo is built. */
+.intro__window { position: relative; width: min(320px, calc(100vw - 32px)); padding: 0.85rem 1rem 1rem; border: 2px solid #ff716b; border-radius: 12px; background: rgba(11, 18, 32, 0.92); box-shadow: 4px -4px 0 #df4f4e; transform: scaleY(0); opacity: 0; animation: window-open 0.32s var(--ease-pop, ease-out) 1.3s forwards; }
 .intro__window p { margin: 0; color: #fffcf5; }
-.intro__system { font: 800 1.3rem var(--font-display); letter-spacing: 0.5em; padding-inline-start: 0.5em; opacity: 0; animation: fade-in 0.3s ease 1.65s forwards; }
-.intro__welcome { font-size: 0.95rem; color: #b7e36a !important; opacity: 0; animation: fade-in 0.3s ease 1.85s forwards; }
+.intro__system { font: 800 1.25rem var(--font-display); letter-spacing: 0.5em; padding-inline-start: 0.5em; }
+.intro__welcome { min-height: 1.5em; margin-top: 0.25rem !important; font-size: 0.95rem; color: #b7e36a !important; }
+.intro__cur { display: inline-block; width: 0.5em; height: 0.95em; margin-inline-start: 0.08em; vertical-align: -0.12em; background: #b7e36a; animation: cur-blink 0.52s steps(1) infinite; }
+.intro__bar { display: flex; gap: 3px; margin-top: 0.75rem; }
+.intro__bar i { flex: 1; height: 6px; background: rgba(255, 252, 245, 0.12); }
+.intro__bar i::after { content: ""; display: block; height: 100%; background: #b7e36a; transform: scaleX(0); transform-origin: left; animation: seg-on 0.12s steps(2) calc(1.35s + var(--s) * 0.07s) forwards; }
 .intro__skip { position: absolute; inset-inline: 0; bottom: 1.5rem; text-align: center; margin: 0; font-size: 0.8rem; color: rgba(255, 252, 245, 0.55); }
-@keyframes window-open { to { transform: translateX(-50%) scaleY(1); } }
+@keyframes window-open { to { transform: scaleY(1); opacity: 1; } }
+@keyframes seg-on { to { transform: scaleX(1); } }
+@keyframes cur-blink { 50% { opacity: 0; } }
 @keyframes fade-in { to { opacity: 1; } }
-@keyframes intro-exit { to { opacity: 0; visibility: hidden; } }
+@keyframes intro-exit { to { opacity: 0; visibility: hidden; transform: scale(1.03); } }
 
 @media (prefers-reduced-motion: reduce) {
-  html.intro-play .intro, .intro__scene, .intro__ring, .intro__door, .intro__seam, .intro__cube, .intro__window, .intro__system, .intro__welcome { animation-duration: 1ms !important; animation-delay: 0ms !important; }
+  .intro__logo, .intro .vstage__floor, .intro .vox, .intro .vstage__ring, .intro__boot, .intro__window, .intro__bar i::after, .intro__cur { animation: none !important; }
+  .intro .vstage__floor, .intro .vox, .intro__boot, .intro__window { opacity: 1; transform: none; }
+  .intro .vstage__floor { transform: perspective(600px) rotateX(74deg); }
+  .intro__bar i::after { transform: none; }
   html.intro-play .intro { animation: intro-exit 0.3s ease-in 0.7s forwards !important; }
-  .intro__window { transform: translateX(-50%) scaleY(1); } .intro__system, .intro__welcome { opacity: 1; }
 }

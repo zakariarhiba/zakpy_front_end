@@ -30,17 +30,17 @@
     en: {
       "ui.menu": "Menu", "ui.close": "Close menu", "ui.language": "Language", "ui.skip": "Skip to content",
       "ui.toDark": "Switch to dark mode", "ui.toLight": "Switch to light mode",
-      "ui.loading": "Loading", "intro.welcome": "Digital systems with purpose.", "intro.skip": "Tap to skip"
+      "ui.loading": "Loading", "ui.level": "Level", "ui.levelUp": "Level up", "intro.welcome": "Digital systems with purpose.", "intro.skip": "Tap to skip"
     },
     fr: {
       "ui.menu": "Menu", "ui.close": "Fermer le menu", "ui.language": "Langue", "ui.skip": "Aller au contenu",
       "ui.toDark": "Passer en mode sombre", "ui.toLight": "Passer en mode clair",
-      "ui.loading": "Chargement", "intro.welcome": "Des systèmes digitaux utiles.", "intro.skip": "Touchez pour passer"
+      "ui.loading": "Chargement", "ui.level": "Niveau", "ui.levelUp": "Niveau suivant", "intro.welcome": "Des systèmes digitaux utiles.", "intro.skip": "Touchez pour passer"
     },
     ary: {
       "ui.menu": "القائمة", "ui.close": "سد القائمة", "ui.language": "اللغة", "ui.skip": "دوز للمحتوى",
       "ui.toDark": "بدل للمود الغامق", "ui.toLight": "بدل للمود الفاتح",
-      "ui.loading": "كيتحمّل", "intro.welcome": "أنظمة رقمية بمعنى.", "intro.skip": "كليكي باش تعدّي"
+      "ui.loading": "كيتحمّل", "ui.level": "المستوى", "ui.levelUp": "طلعتي مستوى", "intro.welcome": "أنظمة رقمية بمعنى.", "intro.skip": "كليكي باش تعدّي"
     }
   };
 
@@ -160,11 +160,34 @@
   }
   function drawerIsOpen() { var d = drawerParts(); return !!(d && d.menu.classList.contains("is-open")); }
 
-  /* ---------- 3D entry animation (adapted from the Hunter game) ---------- */
-  var introTimer = null;
-  var INTRO_MS = 2900;
+  /* ---------- The voxel logo, shared by the intro and the loader ----------
+     Five cubes drawn like the mark (oblique projection, depth 0.47 toward the top right). All back faces come
+     before all fronts, and no face is drawn where two cubes touch, exactly like the logo. */
+  var VD = 0.47, VB = "0 0 " + (1 + VD) + " " + (1 + VD);
+  var VF = {
+    t: "0," + VD + " " + VD + ",0 " + (1 + VD) + ",0 1," + VD,
+    s: "1," + VD + " " + (1 + VD) + ",0 " + (1 + VD) + ",1 1," + (1 + VD),
+    f: "0," + VD + " 1," + VD + " 1," + (1 + VD) + " 0," + (1 + VD)
+  };
+  var LOGO_CUBES = [[1, 2, 0], [0, 1, 0], [1, 0, 0], [2, 1, 0], [1, 1, 1]]; // x, y, core; order = build order (around the plus, core last)
+  function voxLogo() {
+    function has(x, y) { return LOGO_CUBES.some(function (c) { return c[0] === x && c[1] === y; }); }
+    var backs = "", fronts = "";
+    LOGO_CUBES.forEach(function (c, i) {
+      var open = '<svg class="vox' + (c[2] ? " is-core" : "") + '" style="--x:' + c[0] + ";--y:" + c[1] + ";--i:" + i + '" viewBox="' + VB + '" aria-hidden="true" focusable="false">';
+      var faces = (has(c[0], c[1] - 1) ? "" : '<polygon class="t" points="' + VF.t + '"/>') + (has(c[0] + 1, c[1]) ? "" : '<polygon class="s" points="' + VF.s + '"/>');
+      backs += open + faces + "</svg>";
+      fronts += open + '<polygon class="f" points="' + VF.f + '"/></svg>';
+    });
+    return '<div class="vstage__floor"></div><span class="vstage__ring"></span><span class="vstage__ring vstage__ring--2"></span><div class="vstage__cubes">' + backs + fronts + "</div>";
+  }
+  function segs(n) { var h = ""; for (var i = 0; i < n; i++) h += '<i style="--s:' + i + '"></i>'; return h; }
+
+  /* ---------- Entry intro: the logo builds itself in the dark, the ZAKPY window boots ---------- */
+  var introTimer = null, introTyping = null;
+  var INTRO_MS = 3000;
   function introFinish() {
-    clearTimeout(introTimer);
+    clearTimeout(introTimer); clearInterval(introTyping);
     root.classList.remove("intro-play");
     var el = document.querySelector(".intro"); if (el && el.parentNode) el.parentNode.removeChild(el);
   }
@@ -173,22 +196,20 @@
     var el = document.createElement("div");
     el.className = "intro"; el.setAttribute("aria-hidden", "true"); el.setAttribute("lang", "en"); el.setAttribute("dir", "ltr"); /* the intro is always English */
     el.innerHTML =
-      '<div class="intro__viewport"><div class="intro__scene">' +
-      '<div class="intro__floor"></div><span class="intro__ring"></span><span class="intro__ring intro__ring--2"></span>' +
-      '<div class="intro__cube">' +
-      '<span class="intro__face intro__face--back"></span><span class="intro__face intro__face--right"></span>' +
-      '<span class="intro__face intro__face--left"></span><span class="intro__face intro__face--top"></span>' +
-      '<span class="intro__face intro__face--bottom"></span>' +
-      '<span class="intro__face intro__face--front"><img src="' + base + 'logo.png" alt="" width="70" height="70"></span>' +
-      '</div>' +
-      '<span class="intro__door intro__door--left"></span><span class="intro__door intro__door--right"></span><span class="intro__seam"></span>' +
-      '</div></div>' +
-      '<div class="intro__window"><p class="intro__system">ZAKPY</p><p class="intro__welcome"></p></div>' +
+      '<p class="intro__boot">&gt; boot zakpy</p>' +
+      '<div class="vstage intro__logo">' + voxLogo() + "</div>" +
+      '<div class="intro__window"><p class="intro__system">ZAKPY</p><p class="intro__welcome"><span class="intro__typed"></span><span class="intro__cur"></span></p>' +
+      '<span class="intro__bar">' + segs(12) + "</span></div>" +
       '<p class="intro__skip"></p>';
-    el.querySelector(".intro__welcome").textContent = t("intro.welcome", "en");
     el.querySelector(".intro__skip").textContent = t("intro.skip", "en");
     el.addEventListener("click", introFinish);
     document.body.insertBefore(el, document.body.firstChild);
+    // The welcome line types in once the window is open.
+    var text = t("intro.welcome", "en"), typed = el.querySelector(".intro__typed"), n = 0;
+    clearInterval(introTyping);
+    setTimeout(function () {
+      introTyping = setInterval(function () { n++; typed.textContent = text.slice(0, n); if (n >= text.length) clearInterval(introTyping); }, 20);
+    }, 1400);
   }
   function introPlay() {
     if (!document.body) return;
@@ -198,34 +219,32 @@
     root.classList.add("intro-play");
     var reduced = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
     clearTimeout(introTimer);
+    if (reduced) { var ty = document.querySelector(".intro__typed"); clearInterval(introTyping); if (ty) ty.textContent = t("intro.welcome", "en"); }
     introTimer = setTimeout(introFinish, reduced ? 1000 : INTRO_MS);
   }
   /* First entry of the browser session on pages that opt in with <html data-zakpy-intro>. */
   var introWanted = root.hasAttribute("data-zakpy-intro") && (!session("zakpy-intro-seen") || /[?&]intro=1/.test(location.search));
   if (introWanted) { root.classList.add("intro-play"); session("zakpy-intro-seen", "1"); }
 
-  /* ---------- Loading overlay: the Hunter logo cube, looping, while a page or a query is pending ----------
+  /* ---------- Loading overlay: the voxel logo, cubes hopping around the plus, while a page or a query is pending ----------
      Automatic for same-site links and plain form submits. For htmx put data-zakpy-loading on the element
      (or a parent). In code: Zakpy.loading.show() / hide() / track(promise). Opt out with data-zakpy-no-loader.
      It only appears if the wait lasts more than a moment, and stays at least 450 ms once shown (no flicker). */
   var loaderEl = null, loadCount = 0, loadShowTimer = null, loadHideTimer = null, loadSafety = null, loadShownAt = 0;
   function loaderBuild() {
     if (loaderEl || !document.body) return loaderEl;
-    var faces = "";
-    ["front", "back"].forEach(function (f) { faces += '<span class="loader__face loader__face--logo loader__face--' + f + '"><img src="' + base + 'logo.png" alt="" width="50" height="50"></span>'; });
-    ["right", "left", "top", "bottom"].forEach(function (f) { faces += '<span class="loader__face loader__face--' + f + '"></span>'; });
     var el = document.createElement("div");
     el.className = "loader"; el.setAttribute("role", "status"); el.setAttribute("aria-live", "polite");
-    el.innerHTML = '<div class="loader__stage" aria-hidden="true"><div class="loader__floor"></div><span class="loader__ring"></span>' +
-      '<span class="loader__ring loader__ring--2"></span><div class="loader__cube">' + faces + '</div></div>' +
-      '<div class="loader__window"><p class="loader__system">ZAKPY</p><p class="loader__text"></p><span class="loader__bar" aria-hidden="true"></span></div>';
+    el.innerHTML = '<div class="vstage loader__logo" aria-hidden="true">' + voxLogo() + "</div>" +
+      '<div class="loader__window"><p class="loader__system">ZAKPY</p><p class="loader__text"><span class="loader__label"></span><span class="loader__cur" aria-hidden="true"></span></p>' +
+      '<span class="loader__bar" aria-hidden="true">' + segs(10) + "</span></div>";
     document.body.appendChild(el);
     loaderEl = el;
     return el;
   }
   function loaderReveal() {
     var el = loaderBuild(); if (!el) return;
-    el.querySelector(".loader__text").textContent = t("ui.loading");
+    el.querySelector(".loader__label").textContent = t("ui.loading");
     void el.offsetWidth;
     el.classList.add("is-on");
     root.setAttribute("aria-busy", "true");
