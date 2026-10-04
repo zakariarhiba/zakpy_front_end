@@ -1,0 +1,168 @@
+/* Motion layer: the ZAKPY game. Everything comes from the logo: voxel cubes in an oblique projection
+   (dark red front, lighter red top and side, cream outline, lime core) and from the Hunter game (grid floor,
+   rings, the ZAKPY window). Calm: short moves, one thing at a time. Only transform and opacity animate.
+   Content is visible without JS and under prefers-reduced-motion: things hide only while <html> has .motion. */
+:root {
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-io: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-pop: cubic-bezier(0.34, 1.45, 0.64, 1);   /* small game overshoot */
+  --vox-front: var(--zakpy-red-dark);
+  --vox-face: #df4f4e;                               /* the lighter red of the logo's top and side faces */
+  --vox-line: var(--zakpy-warm-white);
+  --vox-core: var(--zakpy-lime);
+  --ex: 5px;                                         /* depth of extruded keys, toward the top right like the logo */
+  --hud-font: ui-monospace, "SF Mono", "Cascadia Mono", Consolas, monospace;
+}
+
+/* ---------- HUD label: small monospace line with a voxel, like a game status ---------- */
+.hud { display: inline-flex; align-items: center; gap: 0.6rem; font: 700 0.8125rem/1 var(--hud-font); letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); }
+.hud::before { content: ""; flex: none; width: 9px; height: 9px; background: var(--vox-front); box-shadow: 3px -3px 0 var(--vox-face); margin-top: 3px; }
+[dir="rtl"] .hud { letter-spacing: 0; font-family: var(--font-ar); }
+
+/* ---------- Spawn reveal: data-zakpy-reveal (pop in), ="fade", ="type" (headings), ="pixels" (blocks); parent data-zakpy-stagger ---------- */
+.motion [data-zakpy-reveal]:not(.is-in) { opacity: 0; }
+.motion [data-zakpy-reveal=""]:not(.is-in), .motion [data-zakpy-reveal="up"]:not(.is-in) { transform: translateY(18px) scale(0.97); }
+[data-zakpy-reveal].is-in { transition: opacity 500ms var(--ease-out) var(--d, 0ms), transform 700ms var(--ease-pop) var(--d, 0ms); }
+.motion [data-zakpy-reveal].is-in { opacity: 1; transform: none; }
+
+/* Type: the heading types in like a game dialog, with a lime block cursor. The untyped rest keeps its space, so nothing jumps. */
+.motion [data-zakpy-reveal="type"]:not(.is-in) { opacity: 0; }
+[data-zakpy-reveal="type"].is-in { transition: none; }
+.zt-rest { opacity: 0; }
+.zt-cur { position: relative; display: inline-block; width: 0; }
+.zt-cur::after { content: ""; position: absolute; inset-inline-start: 0.06em; bottom: -0.1em; width: 0.5em; height: 0.92em; background: var(--vox-core); animation: zt-blink 520ms steps(1) infinite; }
+@keyframes zt-blink { 50% { opacity: 0; } }
+
+/* Pixels: the block is uncovered cell by cell, a few cells flash brand colours. */
+.motion [data-zakpy-reveal="pixels"]:not(.is-in):not(.has-px) { opacity: 0; }
+.motion [data-zakpy-reveal="pixels"].has-px:not(.is-in), .motion [data-zakpy-reveal="pixels"].is-in { opacity: 1; transform: none; transition: none; }
+.has-px { position: relative; }
+.zpx { position: absolute; inset: -1px; z-index: 3; display: grid; grid-template-columns: repeat(var(--cols), 1fr); grid-auto-rows: 1fr; pointer-events: none; }
+.zpx i { background: var(--px-cover, var(--bg)); transition: opacity 260ms steps(3) var(--pd, 0ms); }
+.zpx i.c-red { background: var(--vox-front); } .zpx i.c-lime { background: var(--vox-core); } .zpx i.c-face { background: var(--vox-face); }
+.is-in > .zpx i { opacity: 0; }
+
+/* ---------- Voxels: cubes drawn like the logo (SVG made by js/motion.js) ---------- */
+.vox { position: absolute; width: calc(var(--u) * 1.47); height: calc(var(--u) * 1.47); left: calc(var(--x) * var(--u)); top: calc(var(--y) * var(--u) - var(--u) * 0.47); overflow: visible; transform: translate3d(0, var(--lift, 0px), 0); transition: transform 380ms var(--ease-pop); }
+.vox .f { fill: var(--vox-front); } .vox .t, .vox .s { fill: var(--vox-face); } .vox.is-core .f { fill: var(--vox-core); }
+.vox polygon { stroke: var(--vox-line); stroke-width: 0.075; stroke-linejoin: round; }
+.vox.is-core .t, .vox.is-core .s { fill: #8fc24b; } /* a darker lime for the core's top and side, never olive */
+.motion .vox.is-wait { opacity: 0; }
+.vox.is-drop { animation: vox-drop 640ms var(--ease-io) var(--vd, 0ms) both; }
+@keyframes vox-drop {
+  0% { transform: translate3d(0, calc(var(--u) * -3.5), 0); opacity: 0; }
+  12% { opacity: 1; }
+  70% { transform: translate3d(0, 0, 0) scale(1.04, 0.93); }
+  86% { transform: translate3d(0, calc(var(--u) * -0.1), 0) scale(0.98, 1.02); }
+  100% { transform: translate3d(0, 0, 0); opacity: 1; }
+}
+
+/* The stage: the logo built from five voxels over a perspective grid floor, like the Hunter intro. */
+.vstage { --u: clamp(48px, 7vw, 88px); position: relative; width: calc(var(--u) * 3.47); height: calc(var(--u) * 3.47); }
+.vstage__cubes { position: absolute; inset: calc(var(--u) * 0.47) 0 0 0; }
+.vstage__floor {
+  position: absolute; left: 50%; top: 88%; width: calc(var(--u) * 9); height: calc(var(--u) * 5); margin-inline-start: calc(var(--u) * -4.5);
+  background: repeating-linear-gradient(0deg, color-mix(in srgb, var(--accent) 32%, transparent) 0 1px, transparent 1px calc(var(--u) / 2)), repeating-linear-gradient(90deg, color-mix(in srgb, var(--accent) 32%, transparent) 0 1px, transparent 1px calc(var(--u) / 2));
+  -webkit-mask-image: radial-gradient(circle at 50% 0%, #000 0%, transparent 62%); mask-image: radial-gradient(circle at 50% 0%, #000 0%, transparent 62%);
+  transform-origin: 50% 0; transform: perspective(600px) rotateX(74deg); pointer-events: none;
+}
+.vstage__ring { position: absolute; left: 50%; top: 54%; width: calc(var(--u) * 3); height: calc(var(--u) * 3); margin: calc(var(--u) * -1.5) 0 0 calc(var(--u) * -1.5); border-radius: 50%; border: 2px solid var(--vox-core); opacity: 0; pointer-events: none; }
+.vstage__ring.is-on { animation: vstage-ring 900ms var(--ease-out) forwards; }
+@keyframes vstage-ring { 0% { opacity: 0.9; transform: scale(0.3); } 100% { opacity: 0; transform: scale(1.35); } }
+.vstage .vox { cursor: pointer; }
+.vstage.is-idle .vox:hover { --lift: -6px; }
+.vstage.is-idle .vstage__ring { animation: vstage-pulse 5s var(--ease-out) 1.2s infinite; }
+@keyframes vstage-pulse { 0% { opacity: 0.7; transform: scale(0.3); } 36% { opacity: 0; transform: scale(1.3); } 100% { opacity: 0; transform: scale(1.3); } }
+
+/* The grid floor reaches past the stage on purpose; the section around it clips it so the page never gets wider than the screen. */
+.hero--game, section:has(> .container > .vstage), section:has(.vstage) { overflow-x: clip; }
+
+/* Game hero layout: text and the voxel stage side by side, stage on top on small screens. */
+.hero--game > .container { display: grid; gap: var(--space-5); align-items: center; grid-template-columns: minmax(0, 1fr) auto; }
+.hero--game .vstage { justify-self: center; margin: var(--space-2) var(--space-4) calc(var(--u) * 0.9); }
+@media (max-width: 52rem) { .hero--game > .container { grid-template-columns: 1fr; } .hero--game .vstage { order: -1; --u: 46px; justify-self: center; margin: 0 0 calc(var(--u) * 0.8); } }
+
+/* ---------- Levels: a game window pinned in the middle of the screen. Level, tint, XP bar and voxel stack change as you scroll.
+   Markup: section.levels[data-zakpy-levels] > .levels__stage > .levels__win > article.level[data-tint] (x n)
+   On every screen size, phones included. Without JS, under reduced motion or on very short screens it is a plain stack of tinted cards. ---------- */
+.level, .levels__win { --tint: var(--bg-alt); }
+.levels__win { display: grid; gap: var(--space-3); }
+.level { position: relative; padding: var(--space-5) var(--space-4); background: var(--tint); border: 2px solid var(--border); border-radius: var(--radius-sm); }
+.levels [data-tint="red"] { --tint: color-mix(in srgb, var(--accent) 9%, var(--surface)); }
+.levels [data-tint="lime"] { --tint: color-mix(in srgb, var(--zakpy-lime) 20%, var(--surface)); }
+.levels [data-tint="mist"] { --tint: var(--bg-alt); }
+:root[data-theme="dark"] .levels [data-tint="lime"] { --tint: color-mix(in srgb, var(--zakpy-lime) 7%, var(--surface)); }
+.level__k { display: flex; margin-bottom: var(--space-2); }
+.level p { max-width: 32rem; }
+.levels__bar, .levels__xp, .levels__stack, .levels__flash { display: none; }
+.levels__body { display: contents; }
+
+.levels.is-pinned { --hold: 75vh; height: calc(100vh + (var(--n) - 1) * 85vh + var(--hold)); } /* --hold: extra scroll on the last level, time to read it */
+.levels.is-pinned .levels__stage { position: sticky; top: 0; height: 100vh; height: 100svh; padding-top: 4.5rem; display: grid; place-items: center; } /* padding: the sticky navbar is 4.5rem tall, the window centres below it */
+.levels.is-pinned .levels__win {
+  position: relative; width: min(100% - 2 * var(--space-4), 46rem); min-height: min(30rem, 76vh); gap: 0; grid-template-rows: auto 1fr auto;
+  background: var(--tint); border: 2px solid var(--accent); border-radius: 12px;
+  box-shadow: var(--ex) calc(var(--ex) * -1) 0 0 var(--vox-face); transition: background-color 700ms var(--ease-io);
+}
+.levels.is-pinned .levels__bar { display: flex; align-items: center; justify-content: space-between; gap: var(--space-2); padding: 0.75rem var(--space-3); border-bottom: 2px solid var(--accent); border-radius: 10px 10px 0 0; background: color-mix(in srgb, var(--accent) 12%, var(--surface)); font: 800 0.875rem/1 var(--hud-font); letter-spacing: 0.3em; color: var(--text); }
+.levels__lv { letter-spacing: 0.12em; color: var(--text-muted); }
+[dir="rtl"] .levels__bar, [dir="rtl"] .levels__lv { letter-spacing: 0; }
+.levels.is-pinned .levels__body { position: relative; display: grid; grid-template-areas: "c"; align-items: center; overflow: hidden; }
+.levels.is-pinned .level { grid-area: c; background: transparent; border: 0; padding: var(--space-5) calc(var(--space-6) + 24px) var(--space-5) var(--space-4); opacity: 0; transform: translateY(14px) scale(0.98); transition: opacity 360ms var(--ease-io), transform 600ms var(--ease-pop); pointer-events: none; }
+.levels.is-pinned .level.is-active { opacity: 1; transform: none; transition-delay: 220ms; pointer-events: auto; }
+.levels.is-pinned .levels__xp { display: flex; gap: 4px; padding: 0 var(--space-3) var(--space-3); }
+.levels__xp i { flex: 1; height: 10px; background: color-mix(in srgb, var(--text) 12%, transparent); transition: background-color 200ms steps(2); }
+.levels__xp i.is-on { background: var(--vox-core); }
+.levels.is-pinned .levels__stack { --u: 30px; display: block; position: absolute; inset-inline-end: var(--space-4); bottom: var(--space-3); width: calc(var(--u) * 1.47); height: calc(var(--u) * (var(--n) + 0.47)); }
+.levels.is-pinned .levels__flash { display: block; position: absolute; top: 0.45rem; left: 50%; z-index: 4; padding: 0.35rem 0.7rem; border-radius: 6px; font: 800 0.8125rem/1 var(--hud-font); letter-spacing: 0.16em; text-transform: uppercase; white-space: nowrap; color: var(--zakpy-ink); background: var(--vox-core); box-shadow: 3px -3px 0 color-mix(in srgb, var(--vox-core) 55%, var(--zakpy-ink)); opacity: 0; transform: translate(-50%, 6px) scale(0.8); pointer-events: none; }
+[dir="rtl"] .levels__flash { letter-spacing: 0; font-family: var(--font-ar); }
+.levels__flash.is-on { animation: lv-flash 1300ms var(--ease-pop) forwards; }
+/* Phones: the same game window, tighter. */
+@media (max-width: 40rem) {
+  .levels.is-pinned .levels__win { width: calc(100% - 2 * var(--space-2)); min-height: min(27rem, 68svh); --ex: 4px; }
+  .levels.is-pinned .levels__bar { padding: 0.6rem var(--space-2); font-size: 0.75rem; letter-spacing: 0.2em; }
+  .levels.is-pinned .level { padding: var(--space-4) calc(var(--space-2) + 44px) var(--space-4) var(--space-3); }
+  .levels.is-pinned .level h2 { font-size: 1.625rem; }
+  .levels.is-pinned .level .lead { font-size: 1.0625rem; }
+  .levels.is-pinned .levels__stack { --u: 22px; inset-inline-end: var(--space-2); bottom: var(--space-2); }
+  .levels.is-pinned .levels__xp { gap: 3px; padding: 0 var(--space-2) var(--space-2); }
+  .levels__xp i { height: 8px; }
+}
+@keyframes lv-flash { 0% { opacity: 0; transform: translate(-50%, 6px) scale(0.8); } 18% { opacity: 1; transform: translate(-50%, 0) scale(1); } 75% { opacity: 1; transform: translate(-50%, 0) scale(1); } 100% { opacity: 0; transform: translate(-50%, -4px) scale(0.96); } }
+
+/* ---------- Scroll XP bar: html[data-zakpy-xp] adds a segmented bar at the top that fills as you read ---------- */
+.xpbar { position: fixed; inset-inline: 0; top: 0; z-index: 60; height: 4px; display: flex; gap: 2px; pointer-events: none; }
+.xpbar i { flex: 1; background: var(--vox-core); transform: scaleY(0); transform-origin: top; transition: transform 160ms steps(2); }
+.xpbar i.is-on { transform: scaleY(1); }
+
+/* ---------- Header: stays sticky on every screen (owner decision), soft shadow after scrolling ---------- */
+.nav { transition: background-color 300ms var(--ease), box-shadow 300ms var(--ease); }
+.nav.is-scrolled { background: color-mix(in srgb, var(--bg) 97%, transparent); box-shadow: 0 10px 30px rgba(17, 24, 39, 0.07); }
+:root[data-theme="dark"] .nav.is-scrolled { box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35); }
+
+/* Desktop nav: a small voxel pops in on hover and marks the current page. */
+@media (min-width: 52.0625rem) {
+  .nav__links > li > a { display: inline-flex; align-items: center; border-bottom-color: transparent !important; }
+  .nav__links > li > a::before { content: ""; width: 8px; height: 8px; margin-inline-end: 9px; background: var(--vox-front); box-shadow: 3px -3px 0 var(--vox-face); transform: scale(0); transition: transform 320ms var(--ease-pop); }
+  .nav__links > li > a:hover::before, .nav__links > li > a:focus-visible::before { transform: scale(1); }
+  .nav__links > li > a[aria-current="page"]::before { transform: scale(1); background: var(--vox-core); }
+  .nav__group-toggle { border-bottom-color: transparent !important; }
+}
+
+/* ---------- Buttons are keys: an extruded edge toward the top right, like the logo; they press into it ---------- */
+.btn { --btn-edge: var(--vox-face); box-shadow: var(--ex) calc(var(--ex) * -1) 0 0 var(--btn-edge); transition: background var(--motion) var(--ease), color var(--motion) var(--ease), border-color var(--motion) var(--ease), transform 160ms var(--ease-out), box-shadow 160ms var(--ease-out); }
+.btn:hover { transform: translate(2px, -2px); box-shadow: calc(var(--ex) - 2px) calc((var(--ex) - 2px) * -1) 0 0 var(--btn-edge); }
+.btn:active { transform: translate(var(--ex), calc(var(--ex) * -1)); box-shadow: 0 0 0 0 var(--btn-edge); }
+.btn--secondary { --btn-edge: color-mix(in srgb, var(--text) 30%, transparent); }
+.btn--sm { --ex: 3px; }
+.btn[disabled], .btn[aria-disabled="true"] { box-shadow: none; }
+:root[data-theme="dark"] .btn { --btn-edge: color-mix(in srgb, var(--zakpy-coral) 45%, var(--zakpy-ink)); }
+:root[data-theme="dark"] .btn--secondary { --btn-edge: color-mix(in srgb, var(--text) 25%, transparent); }
+
+@media (prefers-reduced-motion: reduce) {
+  .vox, .vox.is-drop, .vstage__ring, .vstage.is-idle .vstage__ring, .levels__flash, .zt-cur::after { animation: none !important; transition: none !important; }
+  .nav, .zpx i, .xpbar i, .levels__xp i { transition: none !important; }
+  [data-zakpy-reveal] { transition: none !important; transform: none !important; opacity: 1 !important; }
+  .zpx { display: none; }
+  .btn:hover, .btn:active { transform: none; }
+}

@@ -10,9 +10,9 @@ mkdir -p "$out/fonts"
   cat "$here/css/00-fonts.css"
   echo "/* brand/tokens/tokens.css */"
   cat "$brand/tokens/tokens.css"
-  for f in 02-semantic 03-base 04-layout 05-components 06-utilities 07-intro 08-loader; do cat "$here/css/$f.css"; done
+  for f in 02-semantic 03-base 04-layout 05-components 06-utilities 07-intro 08-loader 09-motion; do cat "$here/css/$f.css"; done
 } > "$out/zakpy.css"
-cp "$here/js/zakpy.js" "$out/zakpy.js"
+cat "$here/js/zakpy.js" "$here/js/motion.js" > "$out/zakpy.js"
 cp "$brand"/fonts/*.woff2 "$out/fonts/"
 cp "$brand/logos/logo_main_transparent.png" "$out/logo.png"
 # Icon sprite: one <symbol> per brand/icons/*.svg (file name = id). Use <svg class="icon"><use href="zakpy-icons.svg#home"/></svg>

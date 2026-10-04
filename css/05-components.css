@@ -7,10 +7,10 @@
   border-radius: var(--radius-sm); font: 700 1rem/1.2 var(--font-body); text-decoration: none; cursor: pointer;
   transition: background var(--motion) var(--ease), color var(--motion) var(--ease), border-color var(--motion) var(--ease), transform var(--motion) var(--ease);
 }
-.btn:hover { --btn-bg: var(--accent-solid-hover); --btn-border: var(--accent-solid-hover); color: var(--btn-fg); }
+.btn:hover { --btn-border: var(--accent-solid-hover); color: var(--btn-fg); }
 .btn:active { transform: translateY(1px); }
 .btn--secondary { --btn-bg: transparent; --btn-fg: var(--text); --btn-border: var(--text); }
-.btn--secondary:hover { --btn-bg: var(--text); --btn-fg: var(--bg); --btn-border: var(--text); }
+.btn--secondary:hover { --btn-fg: var(--bg); --btn-border: var(--text); }
 .btn--sm { min-height: 2.5rem; padding: 0.375rem 1rem; font-size: 0.9375rem; }
 .btn--block { width: 100%; }
 .btn[disabled], .btn[aria-disabled="true"] { opacity: 0.5; pointer-events: none; }
