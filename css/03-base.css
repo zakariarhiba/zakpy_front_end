@@ -33,3 +33,13 @@ code, kbd { font-family: ui-monospace, "SF Mono", Consolas, monospace; font-size
 .skip-link { position: absolute; inset-inline-start: var(--space-2); top: -4rem; background: var(--inverse-bg); color: var(--inverse-text); padding: var(--space-1) var(--space-2); border-radius: var(--radius-sm); z-index: 100; }
 .skip-link:focus { top: var(--space-1); }
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* Feedback when the language or theme changes (classes are set by zakpy.js, never on first load) */
+.theme-fading, .theme-fading *, .theme-fading *::before, .theme-fading *::after {
+  transition: background-color 350ms var(--ease), color 350ms var(--ease), border-color 350ms var(--ease), fill 350ms var(--ease), stroke 350ms var(--ease), box-shadow 350ms var(--ease) !important;
+}
+body > * { transition: opacity 180ms var(--ease); }
+.lang-switching body > *:not(.intro) { opacity: 0; }
+.theme-toggle .icon-moon, :root[data-theme="dark"] .theme-toggle .icon-sun { animation: theme-icon-in 450ms var(--ease); }
+@keyframes theme-icon-in { from { opacity: 0; transform: rotate(-90deg) scale(0.4); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .theme-toggle .icon-moon, :root[data-theme="dark"] .theme-toggle .icon-sun { animation: none; } body > * { transition: none; } }

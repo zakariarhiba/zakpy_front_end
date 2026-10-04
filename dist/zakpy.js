@@ -85,8 +85,33 @@
     document.dispatchEvent(new CustomEvent("zakpy:lang", { detail: { lang: code } }));
   }
 
+  /* Language change on click: fade the page out, swap text and direction while hidden, fade back in. */
+  var reduceMotion = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)");
+  var langTimer = null;
+  function switchLang(code) {
+    if (code === current) return;
+    if (!document.body || (reduceMotion && reduceMotion.matches)) { applyLang(code, true); return; }
+    clearTimeout(langTimer);
+    root.classList.add("lang-switching");
+    langTimer = setTimeout(function () {
+      applyLang(code, true);
+      setTimeout(function () { root.classList.remove("lang-switching"); }, 30);
+    }, 180);
+  }
+
   /* ---------- Theme: data-zakpy-theme-toggle on an icon button ---------- */
-  function applyTheme(theme) { root.setAttribute("data-theme", theme); syncThemeLabel(); }
+  var themeTimer = null;
+  function applyTheme(theme) {
+    root.setAttribute("data-theme", theme); syncThemeLabel();
+  }
+  function switchTheme(theme) {
+    if (!(reduceMotion && reduceMotion.matches)) {
+      root.classList.add("theme-fading"); // colours ease between themes (see 03-base.css)
+      clearTimeout(themeTimer);
+      themeTimer = setTimeout(function () { root.classList.remove("theme-fading"); }, 450);
+    }
+    applyTheme(theme);
+  }
   function syncThemeLabel() {
     if (!document.body) return;
     var dark = root.getAttribute("data-theme") === "dark";
@@ -191,10 +216,10 @@
     var tt = el.closest("[data-zakpy-theme-toggle]");
     if (tt) {
       var next = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
-      applyTheme(next); store("zakpy-theme", next); return;
+      switchTheme(next); store("zakpy-theme", next); return;
     }
     var lg = el.closest("[data-zakpy-lang-set]");
-    if (lg) { applyLang(lg.getAttribute("data-zakpy-lang-set"), true); return; }
+    if (lg) { switchLang(lg.getAttribute("data-zakpy-lang-set")); return; }
 
     if (el.closest("[data-zakpy-nav-toggle]")) { drawerIsOpen() ? closeDrawer(true) : openDrawer(); return; }
     if (el.closest("[data-zakpy-nav-close]")) { closeDrawer(true); return; }
