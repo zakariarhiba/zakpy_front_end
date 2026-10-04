@@ -5,6 +5,11 @@
     "nav.colors": ["Colours", "Couleurs", "الألوان"],
     "nav.type": ["Type", "Typographie", "الخطوط"],
     "nav.logo": ["Logo", "Logo", "اللوغو"],
+    "nav.icons": ["Icons", "Icônes", "الأيقونات"],
+    "icons.title": ["Icons", "Icônes", "الأيقونات"],
+    "icons.lead": ["One outline style: 24 px grid, 2 px stroke, round ends, the colour of the text around it. Themes taken from the Instagram highlight covers, plus the interface and social icons every site needs. Source files are in brand/icons.", "Un seul style en contour : grille de 24 px, trait de 2 px, bouts arrondis, de la couleur du texte autour. Les thèmes viennent des couvertures de stories Instagram, plus les icônes d'interface et de réseaux sociaux utiles à chaque site. Les fichiers source sont dans brand/icons.", "ستايل واحد بالخطوط: شبكة 24 بيكسل، خط 2 بيكسل، أطراف مدورة، ولونها هو لون النص اللي حواليها. المواضيع جاية من أغلفة الهايلايت ديال إنستغرام، زائد أيقونات الواجهة والسوشيال اللي كل موقع محتاجها. الملفات الأصلية في brand/icons."],
+    "icons.btn": ["Button with an icon", "Bouton avec une icône", "زر بأيقونة"],
+    "icons.link": ["All icons", "Toutes les icônes", "كل الأيقونات"],
     "nav.components": ["Components", "Composants", "الكومبوننتات"],
     "nav.page": ["Page pattern", "Modèle de page", "نموذج الصفحة"],
 
