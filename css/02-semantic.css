@@ -10,6 +10,8 @@
   --border: #e4dfd0;
   --accent: var(--zakpy-red);
   --accent-hover: var(--zakpy-red-dark);
+  --accent-solid: var(--zakpy-red-solid);
+  --accent-solid-hover: var(--zakpy-red-dark);
   --on-accent: var(--zakpy-warm-white);
   --positive: var(--zakpy-success);
   --positive-bg: #e6f4d0;
@@ -46,6 +48,8 @@
   --border: #2b364a;
   --accent: var(--zakpy-coral);
   --accent-hover: #ff8a85;
+  --accent-solid: var(--zakpy-coral);
+  --accent-solid-hover: #ff8a85;
   --on-accent: var(--zakpy-ink);
   --positive: var(--zakpy-lime);
   --positive-bg: #243321;

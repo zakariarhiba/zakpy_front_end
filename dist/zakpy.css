@@ -11,6 +11,7 @@
 :root {
   --zakpy-red: #E53935;
   --zakpy-red-dark: #BE2524;
+  --zakpy-red-solid: #D32F2F; /* solid fills under light text: 4.86:1 with warm white (AA). #E53935 is 4.13:1, use it for logo and accents only */
   --zakpy-coral: #FF716B;
   --zakpy-ink: #111827;
   --zakpy-slate: #475569;
@@ -40,6 +41,8 @@
   --border: #e4dfd0;
   --accent: var(--zakpy-red);
   --accent-hover: var(--zakpy-red-dark);
+  --accent-solid: var(--zakpy-red-solid);
+  --accent-solid-hover: var(--zakpy-red-dark);
   --on-accent: var(--zakpy-warm-white);
   --positive: var(--zakpy-success);
   --positive-bg: #e6f4d0;
@@ -76,6 +79,8 @@
   --border: #2b364a;
   --accent: var(--zakpy-coral);
   --accent-hover: #ff8a85;
+  --accent-solid: var(--zakpy-coral);
+  --accent-solid-hover: #ff8a85;
   --on-accent: var(--zakpy-ink);
   --positive: var(--zakpy-lime);
   --positive-bg: #243321;
@@ -153,14 +158,14 @@ code, kbd { font-family: ui-monospace, "SF Mono", Consolas, monospace; font-size
 .split { display: grid; gap: var(--space-4); align-items: center; grid-template-columns: repeat(auto-fit, minmax(min(100%, 24rem), 1fr)); }
 /* ---------- Button ---------- */
 .btn {
-  --btn-bg: var(--accent); --btn-fg: var(--on-accent); --btn-border: var(--accent);
+  --btn-bg: var(--accent-solid); --btn-fg: var(--on-accent); --btn-border: var(--accent-solid);
   display: inline-flex; align-items: center; justify-content: center; gap: var(--space-1);
   min-height: 3rem; padding: 0.625rem 1.5rem;
   background: var(--btn-bg); color: var(--btn-fg); border: 2px solid var(--btn-border);
   border-radius: var(--radius-sm); font: 700 1rem/1.2 var(--font-body); text-decoration: none; cursor: pointer;
   transition: background var(--motion) var(--ease), color var(--motion) var(--ease), border-color var(--motion) var(--ease), transform var(--motion) var(--ease);
 }
-.btn:hover { --btn-bg: var(--accent-hover); --btn-border: var(--accent-hover); color: var(--btn-fg); }
+.btn:hover { --btn-bg: var(--accent-solid-hover); --btn-border: var(--accent-solid-hover); color: var(--btn-fg); }
 .btn:active { transform: translateY(1px); }
 .btn--secondary { --btn-bg: transparent; --btn-fg: var(--text); --btn-border: var(--text); }
 .btn--secondary:hover { --btn-bg: var(--text); --btn-fg: var(--bg); --btn-border: var(--text); }
@@ -329,7 +334,7 @@ code, kbd { font-family: ui-monospace, "SF Mono", Consolas, monospace; font-size
 /* ---------- Steps (process, explained visually) ---------- */
 .steps { list-style: none; counter-reset: step; display: grid; gap: var(--space-3); padding: 0; margin: 0; grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr)); }
 .steps li { counter-increment: step; }
-.steps li::before { content: counter(step); display: grid; place-items: center; width: 2.75rem; height: 2.75rem; border-radius: 50%; background: var(--accent); color: var(--on-accent); font: 800 1.25rem var(--font-display); margin-bottom: var(--space-2); }
+.steps li::before { content: counter(step); display: grid; place-items: center; width: 2.75rem; height: 2.75rem; border-radius: 50%; background: var(--accent-solid); color: var(--on-accent); font: 800 1.25rem var(--font-display); margin-bottom: var(--space-2); }
 .steps h3 { font-size: 1.25rem; }
 
 /* ---------- Tabs ---------- */

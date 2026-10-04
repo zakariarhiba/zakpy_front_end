@@ -53,7 +53,7 @@ Components: button, link with arrow, card, navigation, hero, badge, alert, form 
 
 ## Open points
 
-- Primary button text contrast is 4.13:1 (Warm White on `#E53935`), under the 4.5:1 AA minimum for normal text. The brand guide asks for red buttons, so it is kept. Fix options: darker red for the button background, or larger bold text. Decision for the owner.
+- Primary button and step badges use `--accent-solid` (`#D32F2F` in light, 4.86:1 with Warm White, AA). Dark theme uses coral with ink text, 6.61:1. The brand red `#E53935` (4.13:1 under light text) is for the logo and accents only, never as a solid fill under normal text. Hover uses `#BE2524` (5.89:1).
 - The logo is the transparent PNG (`brand/logos/logo_main_transparent.png`). A vector SVG mark would be sharper at small sizes and is still missing.
 - No icon set yet.
 
