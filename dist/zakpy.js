@@ -20,12 +20,17 @@
     } catch (e) { return null; }
   }
 
-  /* ---------- Languages: en, fr, ary (Darija, Arabic script, right to left) ---------- */
+  /* ---------- Languages: en, fr, ary (Darija), ar (Modern Standard Arabic), both right to left ----------
+     A site lists its languages on <html data-zakpy-langs="en fr ar"> (default "en fr ary"). */
   var LANGS = {
     en: { lang: "en", dir: "ltr" },
     fr: { lang: "fr", dir: "ltr" },
-    ary: { lang: "ar-MA", dir: "rtl" }
+    ary: { lang: "ar-MA", dir: "rtl" },
+    ar: { lang: "ar", dir: "rtl" }
   };
+  var allowed = (root.getAttribute("data-zakpy-langs") || "en fr ary").split(/\s+/).filter(function (c) { return LANGS[c]; });
+  if (!allowed.length) allowed = ["en"];
+  function isAllowed(code) { return allowed.indexOf(code) !== -1; }
   var UI = {
     en: {
       "ui.menu": "Menu", "ui.close": "Close menu", "ui.language": "Language", "ui.skip": "Skip to content",
@@ -41,6 +46,11 @@
       "ui.menu": "القائمة", "ui.close": "سد القائمة", "ui.language": "اللغة", "ui.skip": "دوز للمحتوى",
       "ui.toDark": "بدل للمود الغامق", "ui.toLight": "بدل للمود الفاتح",
       "ui.loading": "كيتحمّل", "ui.level": "المستوى", "ui.levelUp": "طلعتي مستوى", "intro.welcome": "أنظمة رقمية بمعنى.", "intro.skip": "كليكي باش تعدّي"
+    },
+    ar: {
+      "ui.menu": "القائمة", "ui.close": "إغلاق القائمة", "ui.language": "اللغة", "ui.skip": "الانتقال إلى المحتوى",
+      "ui.toDark": "التبديل إلى الوضع الداكن", "ui.toLight": "التبديل إلى الوضع الفاتح",
+      "ui.loading": "جارٍ التحميل", "ui.level": "المستوى", "ui.levelUp": "مستوى جديد", "intro.welcome": "أنظمة رقمية ذات غاية.", "intro.skip": "انقر للتخطي"
     }
   };
 
@@ -54,17 +64,20 @@
 
   function detectLang() {
     var saved = store("zakpy-lang");
-    if (saved && LANGS[saved]) return saved;
+    if (saved && isAllowed(saved)) return saved;
     var nav = (navigator.language || "en").toLowerCase();
-    if (nav.indexOf("fr") === 0) return "fr";
-    if (nav.indexOf("ar") === 0) return "ary";
-    return "en";
+    if (nav.indexOf("fr") === 0 && isAllowed("fr")) return "fr";
+    if (nav.indexOf("ar") === 0) {
+      if (isAllowed("ary")) return "ary";
+      if (isAllowed("ar")) return "ar";
+    }
+    return isAllowed("en") ? "en" : allowed[0];
   }
 
   var current = detectLang();
 
   function applyLang(code, persist) {
-    if (!LANGS[code]) code = "en";
+    if (!isAllowed(code)) code = isAllowed("en") ? "en" : allowed[0];
     current = code;
     root.setAttribute("lang", LANGS[code].lang);
     root.setAttribute("dir", LANGS[code].dir);
@@ -79,7 +92,9 @@
       });
     });
     document.querySelectorAll("[data-zakpy-lang-set]").forEach(function (b) {
-      b.setAttribute("aria-pressed", b.getAttribute("data-zakpy-lang-set") === code);
+      var c = b.getAttribute("data-zakpy-lang-set");
+      b.hidden = !isAllowed(c); // a site that does not offer a language hides its button
+      b.setAttribute("aria-pressed", c === code);
     });
     syncThemeLabel();
     document.dispatchEvent(new CustomEvent("zakpy:lang", { detail: { lang: code } }));
@@ -606,7 +621,8 @@
 
     var bar = document.createElement("div");
     bar.className = "levels__bar"; bar.setAttribute("aria-hidden", "true");
-    bar.innerHTML = '<span>ZAKPY</span><span class="levels__lv"></span>';
+    bar.innerHTML = '<span></span><span class="levels__lv"></span>';
+    bar.firstChild.textContent = sec.getAttribute("data-zakpy-levels-title") || "ZAKPY"; // window title, a site can set its own
     win.insertBefore(bar, win.firstChild);
     var xp = document.createElement("div");
     xp.className = "levels__xp"; xp.setAttribute("aria-hidden", "true");

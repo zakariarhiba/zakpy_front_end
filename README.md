@@ -29,11 +29,11 @@ Sites hold their own copy so each deploys alone. Never edit the copy, change it 
 
 Components: button, link with arrow, card, navigation, hero, badge, alert, form fields, table, stat, steps, tabs, dialog, footer. Layout helpers: container, section, stack, cluster, grid, split.
 
-## Languages (English, French, Darija)
+## Languages (English, French, Darija, Arabic)
 
-- Three languages: `en`, `fr` and `ary` (Darija, Arabic script, right to left). Default comes from the browser, the choice is saved.
+- Languages: `en`, `fr`, `ary` (Darija) and `ar` (Modern Standard Arabic), both Arabic ones right to left. A site picks its set on `<html data-zakpy-langs="en fr ar">` (default `en fr ary`). Buttons for other languages are hidden, a saved or browser language outside the set falls back to English. Default comes from the browser, the choice is saved.
 - Put text on elements with `data-i18n="key"` (or `data-i18n-attr="aria-label:key"`). Define the words before the script: `window.ZAKPY_I18N = { en: {...}, fr: {...}, ary: {...} }`. `showcase/i18n.js` is a full example.
-- Switcher: buttons with `data-zakpy-lang-set="en|fr|ary"` inside `.lang-switch`. Direction and fonts (Cairo for Arabic) follow automatically.
+- Switcher: buttons with `data-zakpy-lang-set="en|fr|ary|ar"` inside `.lang-switch`. Direction and fonts (Cairo for Arabic) follow automatically.
 - Shared interface words (menu, close, theme, intro text) are built in. JS API: `Zakpy.setLang('fr')`.
 
 ## Navigation, theme icon, intro
@@ -64,7 +64,7 @@ Files: `css/09-motion.css`, `js/motion.js` (built into `dist/zakpy.js`). The mot
 | Piece | How to use |
 | --- | --- |
 | Logo stage | `<div data-zakpy-voxels="logo"></div>`: the mark is built from five voxels dropping onto a grid floor, lime core last with a ring, then a slow ring pulse. Hover lifts a cube, click rebuilds. Use with `.hero--game` (text and stage side by side, stage on top and centred on phones). The logo never mirrors in RTL. |
-| Levels | `section.levels[data-zakpy-levels] > .levels__stage > .levels__win > .levels__body > article.level[data-tint]` (red, lime, mist). A game window pinned on screen: title bar with "Level 01/03", one level at a time, XP bar, one voxel collected per level, "Level up" badge, the last level holds (`--hold`, 75vh) so it can be read. Headings inside with `data-zakpy-type` type in. Works on phones too (tighter window, centred below the sticky navbar, uses `svh`). Plain tinted cards only without JS, with reduced motion or on screens shorter than 460 px. |
+| Levels | `section.levels[data-zakpy-levels] > .levels__stage > .levels__win > .levels__body > article.level[data-tint]` (red, lime, mist). A game window pinned on screen: title bar with "Level 01/03", one level at a time, XP bar, one voxel collected per level, "Level up" badge, the last level holds (`--hold`, 75vh) so it can be read. The window title is "ZAKPY", or set your own with `data-zakpy-levels-title`. Headings inside with `data-zakpy-type` type in. Works on phones too (tighter window, centred below the sticky navbar, uses `svh`). Plain tinted cards only without JS, with reduced motion or on screens shorter than 460 px. |
 | Type | `data-zakpy-reveal="type"` on a heading: types in with a lime block cursor, no layout jump, works in Darija. |
 | Spawn | `data-zakpy-reveal` (pop in with a small bounce), `="fade"`, parent `data-zakpy-stagger` (children one after another). |
 | Pixels | `data-zakpy-reveal="pixels"`: the block is uncovered cell by cell, a few cells flash red or lime. |

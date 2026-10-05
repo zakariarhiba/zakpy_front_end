@@ -220,7 +220,8 @@
 
     var bar = document.createElement("div");
     bar.className = "levels__bar"; bar.setAttribute("aria-hidden", "true");
-    bar.innerHTML = '<span>ZAKPY</span><span class="levels__lv"></span>';
+    bar.innerHTML = '<span></span><span class="levels__lv"></span>';
+    bar.firstChild.textContent = sec.getAttribute("data-zakpy-levels-title") || "ZAKPY"; // window title, a site can set its own
     win.insertBefore(bar, win.firstChild);
     var xp = document.createElement("div");
     xp.className = "levels__xp"; xp.setAttribute("aria-hidden", "true");

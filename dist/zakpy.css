@@ -223,6 +223,7 @@ code, kbd { font-family: ui-monospace, "SF Mono", Consolas, monospace; font-size
 .lang-switch button + button { border-inline-start: 2px solid var(--border); }
 .lang-switch button:hover { color: var(--text); background: var(--bg-alt); }
 .lang-switch button[aria-pressed="true"] { background: var(--text); color: var(--bg); }
+.lang-switch button[hidden] { display: none; }
 
 /* Hamburger: three lines that turn into a cross */
 .burger { position: relative; width: 1.375rem; height: 1rem; }
