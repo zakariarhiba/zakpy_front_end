@@ -65,11 +65,16 @@
   function detectLang() {
     var saved = store("zakpy-lang");
     if (saved && isAllowed(saved)) return saved;
-    var nav = (navigator.language || "en").toLowerCase();
-    if (nav.indexOf("fr") === 0 && isAllowed("fr")) return "fr";
-    if (nav.indexOf("ar") === 0) {
-      if (isAllowed("ary")) return "ary";
-      if (isAllowed("ar")) return "ar";
+    /* First visit: walk the visitor's preferred languages in order and take the first one this site offers. */
+    var prefs = (navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language || "en"]);
+    for (var i = 0; i < prefs.length; i++) {
+      var nav = String(prefs[i] || "").toLowerCase();
+      if (nav.indexOf("en") === 0 && isAllowed("en")) return "en";
+      if (nav.indexOf("fr") === 0 && isAllowed("fr")) return "fr";
+      if (nav.indexOf("ar") === 0) {
+        if (isAllowed("ary")) return "ary";
+        if (isAllowed("ar")) return "ar";
+      }
     }
     return isAllowed("en") ? "en" : allowed[0];
   }

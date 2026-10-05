@@ -31,7 +31,7 @@ Components: button, link with arrow, card, navigation, hero, badge, alert, form 
 
 ## Languages (English, French, Darija, Arabic)
 
-- Languages: `en`, `fr`, `ary` (Darija) and `ar` (Modern Standard Arabic), both Arabic ones right to left. A site picks its set on `<html data-zakpy-langs="en fr ar">` (default `en fr ary`). Buttons for other languages are hidden, a saved or browser language outside the set falls back to English. Default comes from the browser, the choice is saved.
+- Languages: `en`, `fr`, `ary` (Darija) and `ar` (Modern Standard Arabic), both Arabic ones right to left. A site picks its set on `<html data-zakpy-langs="en fr ar">` (default `en fr ary`). Buttons for other languages are hidden, a saved or browser language outside the set falls back to English. On the first visit the language comes from the visitor's browser preferences (the first one in their list that the site offers, otherwise English). A language picked by hand is saved and wins afterwards.
 - Put text on elements with `data-i18n="key"` (or `data-i18n-attr="aria-label:key"`). Define the words before the script: `window.ZAKPY_I18N = { en: {...}, fr: {...}, ary: {...} }`. `showcase/i18n.js` is a full example.
 - Switcher: buttons with `data-zakpy-lang-set="en|fr|ary|ar"` inside `.lang-switch`. Direction and fonts (Cairo for Arabic) follow automatically.
 - Shared interface words (menu, close, theme, intro text) are built in. JS API: `Zakpy.setLang('fr')`.
